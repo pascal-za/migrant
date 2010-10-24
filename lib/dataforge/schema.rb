@@ -25,6 +25,7 @@ module DataForge
               @indexes << [(association.name.to_s+'_type').to_sym, association.options[:foreign_key] || (association.name.to_s+'_id').to_sym]
             end
             @columns[association.options[:foreign_key] || (association.name.to_s+'_id').to_sym] = DataType::ForeignKey.new
+            @indexes << (association.name.to_s+'_id').to_sym
         end
       end
     end
@@ -45,7 +46,8 @@ module DataForge
       data_type = (args.first.nil?)? DataType::String : args.slice!(0)
       options = args.extract_options!
 
-      @indexes << field if options.delete(:index)
+      # Add index if explicitly asked
+      @indexes << field if options.delete(:index) || data_type.class.to_s == 'Hash' && data_type.delete(:index)
 
       # Matches: description DataType::Paragraph, :index => true
       if data_type.is_a?(Class) && data_type.respond_to?(:migration_data_example)

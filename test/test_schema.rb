@@ -68,6 +68,17 @@ class TestSchema < Test::Unit::TestCase
     should "generate a string column when an email example or class is given" do
       assert_schema(User, :email, :type => :string)    
     end
+    
+    should "generate indexes for all foreign keys automatically" do
+      assert_contains(Business.schema.index_migrations, :user_id, 'Missing index on belongs_to')
+      assert_contains(Business.schema.index_migrations, [:owner_type, :owner_id], 'Missing index on polymorphic belongs_to')      
+      assert_contains(BusinessCategory.schema.index_migrations, :business_id, 'Missing index on belongs_to')      
+      assert_contains(BusinessCategory.schema.index_migrations, :category_id, 'Missing index on belongs_to')      
+    end
+    
+    should "generate indexes on any column when explicitly asked to" do
+      assert_contains(Category.schema.index_migrations, :title, 'Missing index on :index => true column')
+    end 
 
   end
 

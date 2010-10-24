@@ -13,7 +13,6 @@ module DataType
     end
     
     def self.migration_data_example 
-      "Some string" 
     end
   end
 end
