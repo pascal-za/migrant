@@ -1,5 +1,6 @@
 class Business < ActiveRecord::Base
   belongs_to :user
+  belongs_to :owner, :polymorphic => true
 
   has_many :business_categories
   has_many :categories, :through => :business_categories

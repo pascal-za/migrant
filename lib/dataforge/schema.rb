@@ -13,17 +13,18 @@ module DataForge
       @columns = Hash.new
       @indexes = Array.new
       
-      self.instance_eval(&block)
+      # Runs method_missing on columns given in the model "structure" DSL
+      self.instance_eval(&block) if block_given?
       
       # Add in associations
       associations.each do |association|
         case association.macro
           when :belongs_to
             if association.options[:polymorphic]
-              @columns[association.name.to_s+'_type'] = DataType::Polymorhic.new 
-              @indexes << [association.name.to_s+'_type', association.options[:foreign_key] || association.name.to_s+'_id']
+              @columns[(association.name.to_s+'_type').to_sym] = DataType::Polymorphic.new 
+              @indexes << [(association.name.to_s+'_type').to_sym, association.options[:foreign_key] || (association.name.to_s+'_id').to_sym]
             end
-            @columns[association.options[:foreign_key] || association.name.to_s+'_id'] = DataType::ForeignKey.new
+            @columns[association.options[:foreign_key] || (association.name.to_s+'_id').to_sym] = DataType::ForeignKey.new
         end
       end
     end
@@ -50,9 +51,6 @@ module DataForge
       if data_type.is_a?(Class) && data_type.respond_to?(:migration_data_example)
         @columns[field] = data_type.new(options)
       # Matches: description :index => true, :unique => true
-      elsif data_type.is_a?(Hash)
-        @columns[field] = DataType::Base.new(options)
-      # Matches: description "my description"
       else
         begin
           # Eg. "My field" -> String -> DataType::String

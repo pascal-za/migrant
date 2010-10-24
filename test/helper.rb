@@ -1,3 +1,12 @@
+require 'simplecov'
+SimpleCov.adapters.define 'dataforge' do
+  add_filter '/test'
+  add_group 'Core Extensions', '/lib/dataforge'
+  add_group 'Schema Data Types', '/lib/datatype'
+  add_group 'Rake Tasks', '/lib/tasks'
+end
+SimpleCov.start 'dataforge'
+
 require 'rubygems'
 require 'turn' # For nicer output
 require 'test/unit'
