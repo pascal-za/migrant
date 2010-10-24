@@ -11,8 +11,10 @@ begin
     gem.homepage = "http://github.com/101pascal/dataforge"
     gem.authors = ["Pascal Houliston"]
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
-    gem.add_development_dependency "ansi", ">= 1.2.2"
-    gem.add_development_dependency "turn", ">= 0.8.1"    
+    gem.add_development_dependency "ansi", "= 1.2.2"
+    gem.add_development_dependency "turn", "= 0.8.1"  
+    gem.add_development_dependency "sqlite3-ruby", ">= 0"        
+    gem.add_dependency "activerecord", ">= 3.0.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
