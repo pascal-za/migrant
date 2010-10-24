@@ -1,0 +1,10 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    shoulda (2.11.3)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  shoulda
