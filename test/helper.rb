@@ -4,7 +4,7 @@ require 'test/unit'
 require 'shoulda'
 require 'active_record'
 
-# Load and reset database
+# Reset and load database
 db_path = File.join(File.dirname(__FILE__), '..', 'tmp')+'test.sqlite3'
 File.delete(db_path) if File.exists?(db_path)
 
@@ -14,7 +14,8 @@ ActiveRecord::Base.establish_connection(
 )
 
 # Load our mock models in models/*.rb
-%W{business business_category category review user}.each do |model| 
+# Not including every file in the directory, because some will be used later to mock "new" models
+%W{business business_category category user}.each do |model| 
   require(File.join(File.dirname(__FILE__), 'models', model))
 end
 
