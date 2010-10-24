@@ -4,6 +4,7 @@ module DataForge
       # Using instance_*evil* to get the neater DSL on the models.
       # So, my_field in the structure block actually calls DataForge::Schema.my_field
       @@schema = Schema.new(&block)
+      puts @@schema.migrations.inspect
     end
   end
 end
