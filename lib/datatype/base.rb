@@ -4,6 +4,7 @@ module DataType
     # decide the best structure
     def initialize(options={})
       @options = options
+      @value = options.delete(:value)
     end
     
     # Default is 'ye good ol varchar(255)

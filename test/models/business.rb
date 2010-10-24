@@ -8,7 +8,7 @@ class Business < ActiveRecord::Base
   structure do
     name             "The Kernel's favourite fried chickens", :was => :title
     website          "http://www.google.co.za/", :was => [:site, :homepage]
-    email            "bob@nowhere.com"
+    address          ["11 Test Drive", "Gardens", "Cape Town" ,"South Africa"].join("\n")
     summary          DataType::Sentence
     description      DataType::Paragraph
     landline         DataType::PhoneNumber

@@ -54,7 +54,7 @@ module DataForge
       else
         begin
           # Eg. "My field" -> String -> DataType::String
-          @columns[field] = "DataType::#{data_type.class.to_s}".constantize.new(options)
+          @columns[field] = "DataType::#{data_type.class.to_s}".constantize.new(options.merge(:value => data_type))
         rescue NameError
           # We don't have a matching type, throw a warning and default to string
           puts "MIGRATION WARNING: No migration implementation for class #{data_type.class.to_s} on field '#{field}', defaulting to string..."
