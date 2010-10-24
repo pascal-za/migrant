@@ -1,5 +1,5 @@
 module DataType
-  class Email < Base
+  class Email < String
   
   end
 end

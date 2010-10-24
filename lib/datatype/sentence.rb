@@ -1,5 +1,5 @@
 module DataType
-  class Sentence < Base
+  class Sentence < String
   
   end
 end

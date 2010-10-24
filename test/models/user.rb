@@ -1,8 +1,8 @@
 class User < ActiveRecord::Base
   structure do
-    name               DataType::Name
+    name               DataType::Sentence
     email              DataType::Email
-    encrypted_password :size => 48
-    password_salt      :size => 42
+    encrypted_password :limit => 48
+    password_salt      :limit => 42
   end
 end

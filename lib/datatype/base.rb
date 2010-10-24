@@ -4,7 +4,7 @@ module DataType
     # decide the best structure
     def initialize(options={})
       @options = options
-      @value = options.delete(:value)
+      @value = options.delete(:value) || ''
     end
     
     # Default is 'ye good ol varchar(255)
@@ -26,7 +26,6 @@ require 'datatype/email'
 require 'datatype/float'
 require 'datatype/foreign_key'
 require 'datatype/hash'
-require 'datatype/name'
 require 'datatype/paragraph'
 require 'datatype/phone_number'
 require 'datatype/polymorphic'
