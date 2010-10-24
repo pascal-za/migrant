@@ -2,8 +2,6 @@ require 'rubygems'
 require 'turn' # For nicer output
 require 'test/unit'
 require 'shoulda'
-require 'active_support'
-require 'active_record'
 
 # Must be loaded before appropriate models so we get class method extensions
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))

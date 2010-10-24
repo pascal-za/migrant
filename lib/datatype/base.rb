@@ -3,8 +3,7 @@ module DataType
     # Pass the developer's ActiveRecord::Base structure and we'll
     # decide the best structure
     def initialize(options={})
-      @options = (options.class.to_s == 'Hash')? options : options.extract_options!
-      puts @options.inspect
+      @options = options
     end
     
     # Default is 'ye good ol varchar(255)
@@ -21,6 +20,7 @@ end
 # And all the data types we offer...
 require 'datatype/date'
 require 'datatype/email'
+require 'datatype/foreign_key'
 require 'datatype/hash'
 require 'datatype/name'
 require 'datatype/paragraph'
