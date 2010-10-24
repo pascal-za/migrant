@@ -2,7 +2,13 @@ require 'rubygems'
 require 'turn' # For nicer output
 require 'test/unit'
 require 'shoulda'
+require 'active_support'
 require 'active_record'
+
+# Must be loaded before appropriate models so we get class method extensions
+$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
+$LOAD_PATH.unshift(File.dirname(__FILE__))
+require 'dataforge'
 
 # Reset and load database
 db_path = File.join(File.dirname(__FILE__), '..', 'tmp')+'test.sqlite3'
@@ -19,9 +25,6 @@ ActiveRecord::Base.establish_connection(
   require(File.join(File.dirname(__FILE__), 'models', model))
 end
 
-$LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
-$LOAD_PATH.unshift(File.dirname(__FILE__))
-require 'dataforge'
 
 class Test::Unit::TestCase
 end
