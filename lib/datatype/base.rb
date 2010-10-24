@@ -19,8 +19,11 @@ module DataType
 end
 
 # And all the data types we offer...
+require 'datatype/boolean'
+require 'datatype/currency'
 require 'datatype/date'
 require 'datatype/email'
+require 'datatype/float'
 require 'datatype/foreign_key'
 require 'datatype/hash'
 require 'datatype/name'

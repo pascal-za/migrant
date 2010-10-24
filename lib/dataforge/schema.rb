@@ -42,7 +42,7 @@ module DataForge
     # on each model by DataForge::MigrationGenerator
     def method_missing(*args, &block)
       field = args.slice!(0)
-      data_type = (args.first.class.to_s == 'Hash')? DataType::Base : args.slice!(0) || String.new
+      data_type = (args.first.class.to_s == 'Hash' || args.first.nil?)? DataType::Base : args.slice!(0)
       options = args.extract_options!
 
       @indexes << field if options.delete(:index)

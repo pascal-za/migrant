@@ -28,7 +28,7 @@ ActiveRecord::Base.establish_connection(
 
 # Load our mock models in models/*.rb
 # Not including every file in the directory, because some will be used later to mock "new" models
-%W{business business_category category user}.each do |model| 
+%W{business business_category category user customer}.each do |model| 
   require(File.join(File.dirname(__FILE__), 'models', model))
 end
 

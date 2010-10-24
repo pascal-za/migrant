@@ -42,6 +42,28 @@ class TestSchema < Test::Unit::TestCase
       assert_schema(Business.schema.column_migrations, :description, :type => :text)
       assert_schema(Business.schema.column_migrations, :address, :type => :text)      
     end
+    
+    should "generate a boolean column when a true or false is given" do
+      assert_schema(Business.schema.column_migrations, :verified, :type => :boolean)      
+    end
+    
+    should "generate a column verbatim if no type is specified" do
+      assert_schema(Business.schema.column_migrations, :location, :type => :string, :limit => 127)          
+    end
+    
+    should "generate a string column when no options are given" do
+      assert_schema(Category.schema.column_migrations, :title, :type => :string)
+      assert_schema(Category.schema.column_migrations, :summary, :type => :string)                                      
+    end
+    
+    should "generate a decimal column when a currency is given" do
+      assert_schema(Customer.schema.column_migrations, :money_spent, :type => :decimal, :scale => 2)
+      assert_schema(Customer.schema.column_migrations, :money_gifted, :type => :decimal, :scale => 2)      
+    end
+    
+    should "generate a double column when a decimal is given" do
+      assert_schema(Customer.schema.column_migrations, :average_rating, :type => :double)    
+    end
 
   end
 
