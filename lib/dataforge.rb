@@ -4,6 +4,7 @@ require 'active_record'
 require 'datatype/base'
 require 'dataforge/schema'
 require 'dataforge/model_extensions'
+require 'dataforge/migration_generator'
 
 module DataForge
   require 'railtie' if defined?(Rails)

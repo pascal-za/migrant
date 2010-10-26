@@ -1,10 +1,10 @@
 namespace :db do
-  desc "Generates migrations from schema.rb configuration. Does not run the migrations."
+  desc "Generates migrations as per structure design in your models but does not run them"
   task :update do
-    puts "Update ran!"
+   DataForge::MigrationGenerator.new.run
   end
   
-  desc "Generates migrations from schema.rb and migrates database"
+  desc "Generates migrations as per structure design in your models and runs them"
   task :upgrade do
     puts "Upgrade ran!"
   end
