@@ -20,3 +20,4 @@ pkg
 
 ## PROJECT::SPECIFIC
 tmp/*
+test/rails_app/db/migrate/*
