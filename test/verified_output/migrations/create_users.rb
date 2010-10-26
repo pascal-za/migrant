@@ -7,8 +7,9 @@ class CreateUsers < ActiveRecord::Migration
       t.string :password_salt, :limit=>42
       t.decimal :money_spent, :precision=>10, :scale=>2
       t.decimal :money_gifted, :precision=>10, :scale=>2
-      t.double :average_rating
+      t.float :average_rating
     end
+    
   end
   
   def self.down

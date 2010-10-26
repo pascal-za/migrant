@@ -1,7 +1,7 @@
 module DataType
   class Float < Base
     def column
-      {:type => :double}
+      {:type => :float}
     end
   end
 end

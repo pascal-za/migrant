@@ -9,7 +9,7 @@ module DataForge
   # into a schema on that model class by calling method_missing(my_field)
   # and deciding what the best schema type is for the user's requiredments
   class Schema
-    attr_accessor :indexes, :methods_to_alias
+    attr_accessor :indexes, :columns, :methods_to_alias
 
     def initialize  
       @columns = Hash.new
@@ -40,7 +40,7 @@ module DataForge
       !(@columns.blank? && @indexes.blank?)
     end
     
-    def columns
+    def column_migrations
       @columns.collect {|field, data| [field, data.column] } # All that needs to be migrated
     end
     
@@ -74,7 +74,7 @@ module DataForge
   end
   
   class InheritedSchema < Schema
-    attr_accessor :columns, :parent_schema
+    attr_accessor :parent_schema
     
     def initialize(parent_schema)
       @parent_schema = parent_schema

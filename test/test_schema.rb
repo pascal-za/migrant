@@ -1,7 +1,7 @@
 require 'helper'
 
 def assert_schema(model, name, options = {})
-  field = model.schema.columns.detect {|m| m.first == name}
+  field = model.schema.column_migrations.detect {|m| m.first == name}
   assert_not_nil(field, 'Migration was not generated')
   options.each do |key, correct_value|
     assert_equal(correct_value, field[1][key])
@@ -61,8 +61,8 @@ class TestSchema < Test::Unit::TestCase
       assert_schema(User, :money_gifted, :type => :decimal, :scale => 2)      
     end
     
-    should "generate a double column when a decimal is given" do
-      assert_schema(User, :average_rating, :type => :double)    
+    should "generate a floating point column when a decimal is given" do
+      assert_schema(User, :average_rating, :type => :float)    
     end
     
     should "generate a string column when an email example or class is given" do

@@ -1,4 +1,6 @@
 module DataType
+  class DangerousMigration < Exception; end;
+
   class Base
     attr_accessor :aliases
   
@@ -13,6 +15,26 @@ module DataType
     # Default is 'ye good ol varchar(255)
     def column
       {:type => :string}.merge(@options)
+    end
+    
+    # Decides if and how a column will be changed
+    # Provide the details of a previously column, or simply nil to create a new column
+    def structure_changes_from(current_structure = nil)    
+      new_structure = column
+    
+      if current_structure
+        # General RDBMS data loss scenarios
+        raise DataType::DangerousMigration if (new_structure[:type] != :text && [:string, :text].include?(current_structure[:type]) && new_structure[:type] != current_structure[:type])
+
+        if new_structure[:limit] && current_structure[:limit].to_i != new_structure[:limit].to_i ||
+           new_structure[:default] && current_structure[:default].to_s != new_structure[:default].to_s
+           column
+        else
+          nil # No changes
+        end
+      else
+        column
+      end
     end
     
     def self.migration_data_example 
