@@ -3,9 +3,9 @@ require 'fileutils'
 
 SimpleCov.adapters.define 'dataforge' do
   add_filter '/test'
+  add_filter '/lib/tasks'
   add_group 'Core Extensions', '/lib/dataforge'
   add_group 'Schema Data Types', '/lib/datatype'
-  add_group 'Rake Tasks', '/lib/tasks'
 end
 SimpleCov.start 'dataforge'
 ENV['RAILS_ENV'] = 'test'
@@ -22,7 +22,7 @@ $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 require 'dataforge'
 
-# Reset and load database
+# Reset database
 db_path = File.join(File.dirname(__FILE__), 'rails_app', 'db', 'test.sqlite3')
 File.delete(db_path) if File.exists?(db_path)
 
@@ -31,16 +31,6 @@ Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db', 'migrate', '*')).e
  File.delete(file)
 end
 
-#ActiveRecord::Base.establish_connection(
-#  :adapter => "sqlite3",
-#  :database => db_path
-#)
-
-# Load our mock models in models/*.rb
-# Not including every file in the directory, because some will be used later to mock "new" models
-#%W{business business_category category user customer}.each do |model| 
-#  require(File.join(File.dirname(__FILE__), 'models', model))
-#end
 require File.join(File.dirname(__FILE__), 'rails_app', 'config', 'environment')
 
 class Test::Unit::TestCase

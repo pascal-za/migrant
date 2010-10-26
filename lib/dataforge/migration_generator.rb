@@ -13,10 +13,12 @@ module DataForge
         puts "You have some pending database migrations. Either run db:migrate to apply them, or physically remove them to have them combined into one migration by this task (ONLY if other developers haven't run them!)."
         return false
       end
-
+      
       # Get all tables and compare to the desired schema
+      # AR::Base.descendants seems not to work with class caching off .. weird
       ActiveRecord::Base.descendants.each do |model|
         next if model.schema.nil? || !model.schema.requires_migration? # Skips inherited schemas (such as models with STI)
+        model.reset_column_information # db:migrate doesn't do this
         model_schema = model.schema.column_migrations
   
         if model.table_exists?

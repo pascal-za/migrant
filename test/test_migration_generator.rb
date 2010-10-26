@@ -47,7 +47,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert_equal true, DataForge::MigrationGenerator.new.run, "Migration Generator reported an error"
       
       Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
-        if migration_file.include?('estimated_value_notes')
+        if migration_file.include?('landline')
           correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', 'landline.rb')
           assert_equal(File.open(migration_file, 'r') { |r| r.read}.strip, 
                         File.open(correct, 'r') { |r| r.read}.strip,

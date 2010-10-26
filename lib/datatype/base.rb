@@ -27,7 +27,8 @@ module DataType
         raise DataType::DangerousMigration if (new_structure[:type] != :text && [:string, :text].include?(current_structure[:type]) && new_structure[:type] != current_structure[:type])
 
         if new_structure[:limit] && current_structure[:limit].to_i != new_structure[:limit].to_i ||
-           new_structure[:default] && current_structure[:default].to_s != new_structure[:default].to_s
+           new_structure[:default] && current_structure[:default].to_s != new_structure[:default].to_s ||
+           new_structure[:type] != current_structure[:type]
            column
         else
           nil # No changes
