@@ -1,10 +1,13 @@
 module DataType
   class Base
+    attr_accessor :aliases
+  
     # Pass the developer's ActiveRecord::Base structure and we'll
     # decide the best structure
     def initialize(options={})
       @options = options
       @value = options.delete(:value) || ''
+      @aliases = options.delete(:was) || Array.new
     end
     
     # Default is 'ye good ol varchar(255)

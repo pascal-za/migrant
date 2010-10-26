@@ -9,11 +9,12 @@ module DataForge
   # into a schema on that model class by calling method_missing(my_field)
   # and deciding what the best schema type is for the user's requiredments
   class Schema
-    attr_accessor :indexes
+    attr_accessor :indexes, :methods_to_alias
 
     def initialize  
       @columns = Hash.new
       @indexes = Array.new
+      @methods_to_alias = Array.new
     end      
 
     def define_structure(&block)      
@@ -33,6 +34,10 @@ module DataForge
             @indexes << (association.name.to_s+'_id').to_sym
         end
       end
+    end
+    
+    def requires_migration?
+      !(@columns.blank? && @indexes.blank?)
     end
     
     def columns
@@ -68,13 +73,17 @@ module DataForge
     end
   end
   
-  class InheritedSchema
-    attr_accessor :columns, :indexes, :parent_schema
+  class InheritedSchema < Schema
+    attr_accessor :columns, :parent_schema
     
     def initialize(parent_schema)
       @parent_schema = parent_schema
       @columns = Array.new
       @indexes = Array.new
+    end
+    
+    def requires_migration?
+      false # All added to base table
     end
   end
 end
