@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101026163840) do
+ActiveRecord::Schema.define(:version => 20101026181538) do
 
   create_table "business_categories", :force => true do |t|
     t.integer "business_id"
@@ -36,6 +36,8 @@ ActiveRecord::Schema.define(:version => 20101026163840) do
     t.datetime "next_sale"
     t.boolean  "verified"
     t.string   "location",         :limit => 127
+    t.float    "estimated_value"
+    t.string   "notes"
   end
 
   add_index "businesses", ["owner_id"], :name => "index_businesses_on_owner_id"

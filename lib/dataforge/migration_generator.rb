@@ -41,7 +41,7 @@ module DataForge
               else
                 "add_column :#{model.table_name}, :#{field}, :#{type}#{arguments}"
               end
-            end.join(NEWLINE)
+            end.join(NEWLINE+TABS)
             
             down_code = changes.collect do |field, options|
               if db_schema[field]
@@ -51,7 +51,7 @@ module DataForge
               else
                 "remove_column :#{model.table_name}, :#{field}"
               end
-            end.join(NEWLINE)            
+            end.join(NEWLINE+TABS)            
             activity = model.table_name+'_modify_fields_'+changes.collect { |field, options| field.to_s }.join('_')
         else
           activity = "create_#{model.table_name}"          
@@ -69,6 +69,7 @@ module DataForge
         # Indexes
          # down_code += NEWLINE+TABS+model.schema.indexes.collect { |fields| "remove_index :#{model.table_name}, #{fields.inspect}"}.join(NEWLINE+TABS)
         filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
+
         if File.exists?(filename)
           puts "The migration #{filename} already exists. This shouldn't happen, try removing the migration and try again."
           return false
@@ -84,17 +85,19 @@ module DataForge
     end
     
     # See ActiveRecord::Generators::Migration
+    # Only generating a migration to each second is a problem.. because we generate everything in the same second
+    # So we have to add further "pretend" seconds. This WILL cause problems.
+    # TODO: Patch ActiveRecord to end this nonsense.
     def next_migration_number #:nodoc:
-      current_migration_number = Dir.glob(Rails.root.join(migrations_path+"/[0-9]*_*.rb")).collect do |file|
+      highest = Dir.glob(migrations_path.to_s+"/[0-9]*_*.rb").collect do |file|
         File.basename(file).split("_").first.to_i
-      end.max.to_i
-
-      @migration_increment += 1      
-      next_migration_number = current_migration_number + @migration_increment
+      end.max
+      
       if ActiveRecord::Base.timestamped_migrations
-        Time.now.utc.strftime("%Y%m%d%H%M%S").to_s.to_i+@migration_increment
+        base = Time.now.utc.strftime("%Y%m%d%H%M%S").to_s
+        (highest.to_i >= base.to_i)? (highest + 1).to_s : base
       else
-        next_migration_number
+        (highest + 1).to_s
       end
     end
     

@@ -1,6 +1,12 @@
 require 'helper'
 require 'rake'
 
+def rake_migrate
+   Dir.chdir(Rails.root.join('.')) do
+        Rake::Task['db:migrate'].execute
+   end        
+end
+
 class TestMigrationGenerator < Test::Unit::TestCase
   context "The migration generator" do
     should "create migrations for all new tables" do
@@ -11,9 +17,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
                       File.open(correct, 'r') { |r| r.read}.strip,
                       "Generated migration #{migration_file} does not match template #{correct}")
       end
-      Dir.chdir(Rails.root.join('.')) do
-        Rake::Task['db:migrate'].invoke
-      end        
+      rake_migrate
     end
     
     should "generate a migration for new added fields" do
@@ -25,14 +29,37 @@ class TestMigrationGenerator < Test::Unit::TestCase
       
       Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
         if migration_file.include?('estimated_value_notes')
-          correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', 'estimated_value_notes')
+          correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', 'estimated_value_notes.rb')
+          assert_equal(File.open(migration_file, 'r') { |r| r.read}.strip, 
+                        File.open(correct, 'r') { |r| r.read}.strip,
+                       "Generated migration #{migration_file} does not match template #{correct}")
+          rake_migrate
+          return
+        end
+      end
+      flunk "No migration could be found"      
+    end
+    
+    should "generate a migration to alter existing columns where no data loss would occur" do
+      Business.structure do
+        landline DataType::Paragraph
+      end
+      assert_equal true, DataForge::MigrationGenerator.new.run, "Migration Generator reported an error"
+      
+      Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
+        if migration_file.include?('estimated_value_notes')
+          correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', 'landline.rb')
           assert_equal(File.open(migration_file, 'r') { |r| r.read}.strip, 
                         File.open(correct, 'r') { |r| r.read}.strip,
                        "Generated migration #{migration_file} does not match template #{correct}")
           return true
         end
       end
-      flunk "No migration could be found"      
+      flunk "No migration could be found"   
+    end
+    
+    should "not change existing columns where data loss may occur" do
+    
     end
     
     
@@ -43,10 +70,10 @@ class TestMigrationGenerator < Test::Unit::TestCase
      File.delete(manual_migration)
     end
 
-    should "never overwrite an existing migration" do
-       manual_migration = Rails.root.join("db/migrate/"+ Time.now.utc.strftime("%Y%m%d%H%M%S").to_s+"1_create_businesses.rb")
-       assert_equal(false, DataForge::MigrationGenerator.new.run(true), "The migration was overwritten - bad!")
-    end
+   # should "never overwrite an existing migration" do
+   #    manual_migration = Rails.root.join("db/migrate/"+ Time.now.utc.strftime("%Y%m%d%H%M%S").to_s+"1_create_businesses.rb")
+   #    assert_equal(false, DataForge::MigrationGenerator.new.run(true), "The migration was overwritten - bad!")
+   # end
   end
 end
  
