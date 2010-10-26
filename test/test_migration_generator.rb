@@ -4,7 +4,7 @@ require 'rake'
 class TestMigrationGenerator < Test::Unit::TestCase
   context "The migration generator" do
     should "do something" do
-      DataForge::MigrationGenerator.new.run
+      assert DataForge::MigrationGenerator.new.run, "Migration Generator reported an error"
     end
   end
 end

@@ -1,6 +1,6 @@
 module DataType
   class TrueClass < Base
-    def migration
+    def column
       {:type => :boolean}
     end  
   end

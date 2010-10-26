@@ -8,7 +8,7 @@ module DataType
     end
     
     # Default is 'ye good ol varchar(255)
-    def migration
+    def column
       {:type => :string}.merge(@options)
     end
     

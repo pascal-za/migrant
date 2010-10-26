@@ -1,7 +1,7 @@
 require 'helper'
 
 def assert_schema(model, name, options = {})
-  field = model.schema.column_migrations.detect {|m| m.first == name}
+  field = model.schema.columns.detect {|m| m.first == name}
   assert_not_nil(field, 'Migration was not generated')
   options.each do |key, correct_value|
     assert_equal(correct_value, field[1][key])
@@ -70,14 +70,14 @@ class TestSchema < Test::Unit::TestCase
     end
     
     should "generate indexes for all foreign keys automatically" do
-      assert_contains(Business.schema.index_migrations, :user_id, 'Missing index on belongs_to')
-      assert_contains(Business.schema.index_migrations, [:owner_type, :owner_id], 'Missing index on polymorphic belongs_to')      
-      assert_contains(BusinessCategory.schema.index_migrations, :business_id, 'Missing index on belongs_to')      
-      assert_contains(BusinessCategory.schema.index_migrations, :category_id, 'Missing index on belongs_to')      
+      assert_contains(Business.schema.indexes, :user_id, 'Missing index on belongs_to')
+      assert_contains(Business.schema.indexes, [:owner_type, :owner_id], 'Missing index on polymorphic belongs_to')      
+      assert_contains(BusinessCategory.schema.indexes, :business_id, 'Missing index on belongs_to')      
+      assert_contains(BusinessCategory.schema.indexes, :category_id, 'Missing index on belongs_to')      
     end
     
     should "generate indexes on any column when explicitly asked to" do
-      assert_contains(Category.schema.index_migrations, :title, 'Missing index on :index => true column')
+      assert_contains(Category.schema.indexes, :title, 'Missing index on :index => true column')
     end 
 
   end

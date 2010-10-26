@@ -1,6 +1,6 @@
 module DataType
   class Paragraph < Base
-    def migration
+    def column
       {:type => :text}
     end
   end

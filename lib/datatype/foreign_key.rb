@@ -1,6 +1,6 @@
 module DataType
   class ForeignKey < Base
-    def migration
+    def column
       {:type => :integer}
     end
   end

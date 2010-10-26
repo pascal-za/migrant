@@ -1,6 +1,6 @@
 module DataType
   class Float < Base
-    def migration
+    def column
       {:type => :double}
     end
   end

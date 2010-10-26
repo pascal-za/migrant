@@ -9,6 +9,8 @@ module DataForge
   # into a schema on that model class by calling method_missing(my_field)
   # and deciding what the best schema type is for the user's requiredments
   class Schema
+    attr_accessor :indexes
+    
     def initialize(associations, &block)
       @columns = Hash.new
       @indexes = Array.new
@@ -30,12 +32,8 @@ module DataForge
       end
     end
     
-    def column_migrations
-      @columns.collect {|field, data| [field, data.migration] } # All that needs to be migrated
-    end
-    
-    def index_migrations
-      @indexes
+    def columns
+      @columns.collect {|field, data| [field, data.column] } # All that needs to be migrated
     end
     
     # This is where we decide what the best schema is based on the structure requirements

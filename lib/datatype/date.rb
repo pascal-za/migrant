@@ -1,6 +1,6 @@
 module DataType
   class Date < Base
-    def migration
+    def column
       {:type => :datetime}
     end
   end

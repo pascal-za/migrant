@@ -36,6 +36,5 @@ File.delete(db_path) if File.exists?(db_path)
 #end
 require File.join(File.dirname(__FILE__), 'rails_app', 'config', 'environment')
 
-
 class Test::Unit::TestCase
 end
