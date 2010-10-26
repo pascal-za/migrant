@@ -10,15 +10,18 @@ module DataForge
   # and deciding what the best schema type is for the user's requiredments
   class Schema
     attr_accessor :indexes
-    
-    def initialize(associations, &block)
+
+    def initialize  
       @columns = Hash.new
       @indexes = Array.new
-      
+    end      
+
+    def define_structure(&block)      
       # Runs method_missing on columns given in the model "structure" DSL
       self.instance_eval(&block) if block_given?
-      
-      # Add in associations
+    end
+    
+    def add_associations(associations)
       associations.each do |association|
         case association.macro
           when :belongs_to
@@ -62,6 +65,16 @@ module DataForge
         end
       end
       puts [":#{field}", "#{@columns[field].class}", "#{options.inspect}"].collect { |s| s.ljust(25) }.join if ENV['DEBUG']
+    end
+  end
+  
+  class InheritedSchema
+    attr_accessor :columns, :indexes, :parent_schema
+    
+    def initialize(parent_schema)
+      @parent_schema = parent_schema
+      @columns = Array.new
+      @indexes = Array.new
     end
   end
 end

@@ -57,12 +57,12 @@ class TestSchema < Test::Unit::TestCase
     end
     
     should "generate a decimal column when a currency is given" do
-      assert_schema(Customer, :money_spent, :type => :decimal, :scale => 2)
-      assert_schema(Customer, :money_gifted, :type => :decimal, :scale => 2)      
+      assert_schema(User, :money_spent, :type => :decimal, :scale => 2)
+      assert_schema(User, :money_gifted, :type => :decimal, :scale => 2)      
     end
     
     should "generate a double column when a decimal is given" do
-      assert_schema(Customer, :average_rating, :type => :double)    
+      assert_schema(User, :average_rating, :type => :double)    
     end
     
     should "generate a string column when an email example or class is given" do
