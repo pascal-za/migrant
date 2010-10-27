@@ -4,6 +4,7 @@ require 'fileutils'
 SimpleCov.adapters.define 'dataforge' do
   add_filter '/test'
   add_filter '/lib/tasks'
+  
   add_group 'Core Extensions', '/lib/dataforge'
   add_group 'Schema Data Types', '/lib/datatype'
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101027151261) do
+ActiveRecord::Schema.define(:version => 20101027204150) do
 
   create_table "business_categories", :force => true do |t|
     t.integer "business_id"
@@ -29,7 +29,7 @@ ActiveRecord::Schema.define(:version => 20101027151261) do
     t.text     "address"
     t.string   "summary"
     t.text     "description"
-    t.string   "landline"
+    t.text     "landline",         :limit => 255
     t.string   "mobile"
     t.integer  "operating_days",   :limit => 1
     t.datetime "date_established"
@@ -51,6 +51,17 @@ ActiveRecord::Schema.define(:version => 20101027151261) do
 
   add_index "categories", ["title"], :name => "index_categories_on_title"
 
+  create_table "reviews", :force => true do |t|
+    t.integer "business_id"
+    t.integer "user_id"
+    t.string  "name"
+    t.integer "rating",      :limit => 1
+    t.text    "body"
+  end
+
+  add_index "reviews", ["business_id"], :name => "index_reviews_on_business_id"
+  add_index "reviews", ["user_id"], :name => "index_reviews_on_user_id"
+
   create_table "users", :force => true do |t|
     t.string  "name"
     t.string  "email"
@@ -59,6 +70,9 @@ ActiveRecord::Schema.define(:version => 20101027151261) do
     t.decimal "money_spent",                      :precision => 10, :scale => 2
     t.decimal "money_gifted",                     :precision => 10, :scale => 2
     t.float   "average_rating"
+    t.integer "business_id"
   end
+
+  add_index "users", ["business_id"], :name => "index_users_on_business_id"
 
 end

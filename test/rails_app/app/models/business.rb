@@ -9,12 +9,12 @@ class Business < ActiveRecord::Base
     name             "The Kernel's favourite fried chickens", :was => :title
     website          "http://www.google.co.za/", :was => [:site, :homepage]
     address          ["11 Test Drive", "Gardens", "Cape Town" ,"South Africa"].join("\n")
-    summary          DataType::Sentence
-    description      DataType::Paragraph
-    landline         DataType::PhoneNumber
-    mobile           DataType::PhoneNumber
+    summary          :string
+    description      :text
+    landline         :string
+    mobile           :string
     operating_days   0..6
-    date_established DataType::Date
+    date_established :datetime
     next_sale        (Time.now + 10.days)
     verified         false
     location         :type => :string, :limit => 127

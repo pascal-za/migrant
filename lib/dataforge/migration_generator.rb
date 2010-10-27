@@ -1,15 +1,11 @@
 module DataForge
   class MigrationGenerator
-    def initialize
-      @migration_increment = 1
-    end
-  
     TABS = '  ' # Tabs to spaces * 2
     NEWLINE = "\n  "
-    def run(ignore_pending_migrations=false)
+    def run
       migrator = ActiveRecord::Migrator.new(:up, migrations_path)
 
-      unless migrator.pending_migrations.blank? || ignore_pending_migrations
+      unless migrator.pending_migrations.blank?
         puts "You have some pending database migrations. Either run db:migrate to apply them, or physically remove them to have them combined into one migration by this task (ONLY if other developers haven't run them!)."
         return false
       end
@@ -36,6 +32,7 @@ module DataForge
               end
             end.reject { |change| change[1].nil? }
             next if changes.blank?
+            activity = model.table_name+'_modify_fields_'+changes.collect { |field, options| field.to_s }.join('_')
             
             up_code = changes.collect do |field, options|
               type = options.delete(:type)            
@@ -47,7 +44,7 @@ module DataForge
                 "add_column :#{model.table_name}, :#{field}, :#{type}#{arguments}"
               end
             end.join(NEWLINE+TABS)
-            
+           
             down_code = changes.collect do |field, options|
               if db_schema[field]
                 type = db_schema[field].delete(:type)            
@@ -57,7 +54,16 @@ module DataForge
                 "remove_column :#{model.table_name}, :#{field}"
               end
             end.join(NEWLINE+TABS)            
-            activity = model.table_name+'_modify_fields_'+changes.collect { |field, options| field.to_s }.join('_')
+            
+            # For adapters that can report indexes, add as necessary
+            if ActiveRecord::Base.connection.respond_to?(:indexes)
+              current_indexes = ActiveRecord::Base.connection.indexes(model.table_name).collect { |index| (index.columns.length == 1)? index.columns.first.to_sym : index.columns.collect(&:to_sym) }
+              up_code += model.schema.indexes.uniq.collect do |index|
+                unless current_indexes.include?(index)
+                  NEWLINE+TABS+"add_index :#{model.table_name}, #{index.inspect}"
+                end
+              end.compact.join
+            end
         else
           activity = "create_#{model.table_name}"          
           up_code = "create_table :#{model.table_name} do |t|"+NEWLINE+model_schema.collect do |field, options| 
@@ -74,11 +80,6 @@ module DataForge
         # Indexes
          # down_code += NEWLINE+TABS+model.schema.indexes.collect { |fields| "remove_index :#{model.table_name}, #{fields.inspect}"}.join(NEWLINE+TABS)
         filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
-
-        if File.exists?(filename)
-          puts "The migration #{filename} already exists. This shouldn't happen, try removing the migration and try again."
-          return false
-        end
         File.open(filename, 'w') { |migration| migration.write(migration_template(activity, up_code, down_code)) }
       end
       true
@@ -102,12 +103,12 @@ module DataForge
         base = Time.now.utc.strftime("%Y%m%d%H%M%S").to_s
         (highest.to_i >= base.to_i)? (highest + 1).to_s : base
       else
-        (highest + 1).to_s
+        (highest.to_i + 1).to_s
       end
     end
     
     def migration_template(activity, up_code, down_code)
-      "class #{activity.titleize.gsub(/\s/, '')} < ActiveRecord::Migration
+      "class #{activity.camelize.gsub(/\s/, '')} < ActiveRecord::Migration
   def self.up
     #{up_code}
   end
