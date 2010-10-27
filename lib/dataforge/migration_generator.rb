@@ -6,7 +6,7 @@ module DataForge
       migrator = ActiveRecord::Migrator.new(:up, migrations_path)
 
       unless migrator.pending_migrations.blank?
-        puts "You have some pending database migrations. Either run db:migrate to apply them, or physically remove them to have them combined into one migration by this task (ONLY if other developers haven't run them!)."
+        puts "You have some pending database migrations. You can either:\n1. Run them with rake db:migrate\n2. Delete them, in which case this task will probably recreate their actions (DON'T do this if they've been in SCM)."
         return false
       end
       
