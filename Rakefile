@@ -5,10 +5,10 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "migrant"
-    gem.summary = %Q{All the fun of ActiveRecord, without the hassles of migrations and form generation}
-    gem.description = %Q{Provides schema generation based on example data, automatic migration generation, and automatic forms with customizable styling and other win}
+    gem.summary = %Q{All the fun of ActiveRecord, without writing your migrations, and a dash of mocking.}
+    gem.description = %Q{Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper) and generates all your migrations for you so you can spend more time coding the stuff that counts!}
     gem.email = "101pascal@gmail.com"
-    gem.homepage = "http://github.com/101pascal/dataforge"
+    gem.homepage = "http://github.com/pascalh1011/migrant"
     gem.authors = ["Pascal Houliston"]
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     gem.add_development_dependency "ansi", "= 1.2.2"
