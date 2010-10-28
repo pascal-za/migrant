@@ -2,8 +2,8 @@
 
 == Summary
 
-Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper)
-and generates all your migrations for you so you can spend more time coding the stuff that counts!
+Migrant gives you a clean DSL to describe your database schema (somewhat similar to DataMapper)
+and generates all your migrations for you so you can spend more time coding the tricky stuff!
 
 You'll also get a handy .mock method to instantiate a filled in model for testing or debugging purposes.
 
@@ -129,6 +129,6 @@ Please be sure to install all the development dependencies from the gemspec, the
 
 > rake test
 
-
+Simplecov reports will be generated for each run, if it's not at 100% line coverage, something's wrong!
 
 
