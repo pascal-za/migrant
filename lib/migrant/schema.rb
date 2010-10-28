@@ -24,13 +24,14 @@ module Migrant
     
     def add_associations(associations)
       associations.each do |association|
+        field = association.options[:foreign_key] || (association.name.to_s+'_id').to_sym
         case association.macro
           when :belongs_to
             if association.options[:polymorphic]
-              @columns[(association.name.to_s+'_type').to_sym] = DataType::Polymorphic.new 
-              @indexes << [(association.name.to_s+'_type').to_sym, association.options[:foreign_key] || (association.name.to_s+'_id').to_sym]
+              @columns[(association.name.to_s+'_type').to_sym] = DataType::Polymorphic.new(:field => field)
+              @indexes << [(association.name.to_s+'_type').to_sym, field]
             end
-            @columns[association.options[:foreign_key] || (association.name.to_s+'_id').to_sym] = DataType::ForeignKey.new
+            @columns[field] = DataType::ForeignKey.new(:field => field)
             @indexes << (association.name.to_s+'_id').to_sym
         end
       end
@@ -54,9 +55,10 @@ module Migrant
 
       # Add index if explicitly asked
       @indexes << field if options.delete(:index) || data_type.class.to_s == 'Hash' && data_type.delete(:index)
+      options.merge!(:field => field)
 
       # Matches: description DataType::Paragraph, :index => true
-      if data_type.is_a?(Class) && data_type.respond_to?(:migration_data_example)
+      if data_type.is_a?(Class) && data_type.respond_to?(:migrant_data_type?)
         @columns[field] = data_type.new(options)
       # Matches: description :index => true, :unique => true
       else

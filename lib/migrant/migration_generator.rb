@@ -81,6 +81,7 @@ module Migrant
          # down_code += NEWLINE+TABS+model.schema.indexes.collect { |fields| "remove_index :#{model.table_name}, #{fields.inspect}"}.join(NEWLINE+TABS)
         filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
         File.open(filename, 'w') { |migration| migration.write(migration_template(activity, up_code, down_code)) }
+        puts "Wrote #{filename}..."
       end
       true
     end

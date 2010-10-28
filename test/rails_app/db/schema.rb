@@ -10,11 +10,15 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101028192352) do
+ActiveRecord::Schema.define(:version => 20101028205511) do
 
   create_table "business_categories", :force => true do |t|
-    t.integer "business_id"
-    t.integer "category_id"
+    t.integer  "business_id"
+    t.integer  "category_id"
+    t.decimal  "test_currency_mockup", :precision => 10, :scale => 2
+    t.datetime "test_date_mockup"
+    t.float    "test_float_mockup"
+    t.integer  "test_range_mockup"
   end
 
   add_index "business_categories", ["business_id"], :name => "index_business_categories_on_business_id"

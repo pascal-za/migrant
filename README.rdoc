@@ -1,17 +1,124 @@
-= dataforge
+= Migrant
 
-Description goes here.
+== Summary
 
-== Note on Patches/Pull Requests
- 
-* Fork the project.
-* Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
-* Send me a pull request. Bonus points for topic branches.
+Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper)
+and generates all your migrations for you so you can spend more time coding the stuff that counts!
 
-== Copyright
+You'll also get a handy .mock method to instantiate a filled in model for testing or debugging purposes.
 
-Copyright (c) 2010 Pascal Houliston. See LICENSE for details.
+== Getting Started
+
+Only for Rails 3 folks. Anyone wanting it on Rails 2 - feel free to tinker about ;)
+
+Install the latest stable release:
+
+    > [sudo] gem install migrant
+
+Or if you're blessed with the presence of bundler, add to your Gemfile:
+
+    gem 'migrant'
+    
+== Jumping right in
+
+Start by creating some models with the structure you need:
+
+  class Business < ActiveRecord::Base
+    belongs_to :user
+    
+    # Here's where you describe the columns in your model
+    # You can provide a symbol (like a migration) or better still, give an example
+    # of the data that will go in there
+    
+    structure do
+      name             "The kernel's favourite fried chickens"
+      website          "http://www.google.co.za/"
+      address          ["11 Test Drive", "Gardens", "Cape Town" ,"South Africa"].join("\n")
+      date_established Time.now - 3.years
+    end
+  end
+  
+And another for good measure:
+
+  class User < ActiveRecord::Base
+    has_many :businesses
+    
+    structure do
+      name    "Joe"
+      surname "Bob"
+    end
+  end
+  
+Now, to get your database up to date simply run:
+
+  > rake db:upgrade
+
+  Wrote db/migrate/20101028192913_create_businesses.rb...  
+  Wrote db/migrate/20101028192916_create_users.rb...
+  
+OR, if you'd prefer to look over the migrations yourself first, run:
+
+  > rails generate migrations
+  
+Result:
+
+  irb(main):001:0> Business                                                                                                                                                                                                                    
+  => Business(id: integer, user_id: integer, name: string, website: string, address: text, date_established: datetime)  
+  
+  irb(main):002:0> Awesome!!!!                                                                                                                                                                                                                    
+  NoMethodError: undefined method `Awesome!!!!' for main:Object
+  
+== Want more examples?
+
+Check out the test models in test/rails_app/app/models/*
+  
+== What will happen seamlessly
+
+* Creating tables or adding columns (as appropriate)
+* Adding indexes (happens on foreign keys automatically)
+* Changing column types
+* Rollbacks for all the above
+
+== What won't
+
+These actions won't be performed (because we don't want to hurt your data):
+
+* Remove tables/columns 
+* Changing column types where data loss may occur (e.g. varchar -> int)
+
+== Getting a mock of your model
+
+  > rails console
+
+== License
+
+Copyright (c) 2010 Pascal Houliston
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+== Development
+
+Please be sure to install all the development dependencies from the gemspec, then to run tests do:
+
+> rake test
+
+
+
+

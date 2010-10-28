@@ -8,13 +8,22 @@ module DataType
     # decide the best structure
     def initialize(options={})
       @options = options
-      @value = options.delete(:value) || ''
+      @value = options.delete(:value)
+      @field = options.delete(:field)
       @aliases = options.delete(:was) || Array.new
     end
     
     # Default is 'ye good ol varchar(255)
     def column
       {:type => :string}.merge(@options)
+    end
+    
+    def mock
+      @value || self.class.default_mock
+    end
+    
+    def self.default_mock
+      "Some string"
     end
     
     # Decides if and how a column will be changed
@@ -38,8 +47,7 @@ module DataType
       end
     end
     
-    def self.migration_data_example 
-    end
+    def self.migrant_data_type?; true; end
   end
 end
 

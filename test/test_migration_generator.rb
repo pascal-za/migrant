@@ -92,6 +92,23 @@ class TestMigrationGenerator < Test::Unit::TestCase
                    "Migration should have been generated (without a duplicate)")
     end
 
+    should "recursively generate mocks for every model" do
+      BusinessCategory.structure do
+        test_currency_mockup DataType::Currency
+        test_date_mockup DataType::Date
+        test_float_mockup DataType::Float
+        test_range_mockup DataType::Range
+        
+      end
+      BusinessCategory.belongs_to(:nonexistant_class, :polymorphic => true)
+      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      rake_migrate
+      BusinessCategory.reset_column_information
+      mock = BusinessCategory.mock
+      assert_not_nil(mock)
+      # TODO: Spice this up a bit .. it covers everything, but doesn't test output
+    end
+
   end
 end
  
