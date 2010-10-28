@@ -10,7 +10,7 @@ Gem::Specification.new do |s|
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
   s.date = %q{2010-10-28}
-  s.description = %q{Provides schema generation based on example data, automatic migration generation, and automatic forms with customizable styling and other win}
+  s.description = %q{Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper) and generates all your migrations for you so you can spend more time coding the stuff that counts!}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
      "lib/migrant/schema.rb",
      "lib/railtie.rb",
      "lib/tasks/db.rake",
+     "migrant.gemspec",
      "test/additional_models/review.rb",
      "test/helper.rb",
      "test/rails_app/.gitignore",
@@ -89,11 +90,11 @@ Gem::Specification.new do |s|
      "test/verified_output/migrations/estimated_value_notes.rb",
      "test/verified_output/migrations/landline.rb"
   ]
-  s.homepage = %q{http://github.com/101pascal/dataforge}
+  s.homepage = %q{http://github.com/pascalh1011/migrant}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  s.summary = %q{All the fun of ActiveRecord, without the hassles of migrations and form generation}
+  s.summary = %q{All the fun of ActiveRecord, without writing your migrations, and a dash of mocking.}
   s.test_files = [
     "test/additional_models/review.rb",
      "test/test_migration_generator.rb",

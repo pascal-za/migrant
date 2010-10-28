@@ -19,9 +19,11 @@ Start by creating some models with the structure you need:
     belongs_to :user
     
     # Here's where you describe the columns in your model
-    # You can provide a symbol (like a migration) or better still, give an example
-    # of the data that will go in there
-    
+    # The best and easiest way is to provide example data and then Migrant
+    # will work out the appropriate column type for you
+    # You can also specify a symbol (like normal migrations), or just omit arguments
+    # for good 'old varchar(255)
+
     structure do
       name             "The kernel's favourite fried chickens"
       website          "http://www.google.co.za/"
