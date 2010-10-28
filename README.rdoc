@@ -34,7 +34,7 @@ Start by creating some models with the structure you need:
       name             "The kernel's favourite fried chickens"
       website          "http://www.google.co.za/"
       address          ["11 Test Drive", "Gardens", "Cape Town" ,"South Africa"].join("\n")
-      date_established Time.now - 3.years
+      date_established Time.now - 300.years
     end
   end
   
@@ -44,8 +44,9 @@ And another for good measure:
     has_many :businesses
     
     structure do
-      name    "Joe"
-      surname "Bob"
+      name        "John"
+      surname     "Smith"
+      description :string
     end
   end
   
@@ -89,6 +90,13 @@ These actions won't be performed (because we don't want to hurt your data):
 == Getting a mock of your model
 
   > rails console
+
+  irb(main):002:0> my_business = Business.mock
+  => #<Business id: nil, name: "The Kernel's favourite fried chickens", website: "http://www.google.co.za/", 
+       address: "11 Test Drive\nGardens\nCape Town\nSouth Africa", date_established: "1710-10-28 21:03:31">
+  
+  irb(main):003:0> my_business.user
+  => #<User id: nil, name: "John", surname: "Smith", description: "Some string">
 
 == License
 
