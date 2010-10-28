@@ -9,15 +9,7 @@ You'll also get a handy .mock method to instantiate a filled in model for testin
 
 == Getting Started
 
-Only for Rails 3 folks. Anyone wanting it on Rails 2 - feel free to tinker about ;)
-
-Install the latest stable release:
-
-    > [sudo] gem install migrant
-
-Or if you're blessed with the presence of bundler, add to your Gemfile:
-
-    gem 'migrant'
+Only for Rails 3 and Ruby 1.9+ folks. Simply install the gem "migrant", or add it to your bundler Gemfile
     
 == Jumping right in
 
