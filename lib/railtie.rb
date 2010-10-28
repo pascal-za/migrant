@@ -7,5 +7,9 @@ module Migrant
     rake_tasks do
       load "tasks/db.rake"
     end
+    
+    generators do
+      load "generators/migrations.rb"
+    end
   end
 end
