@@ -1,8 +1,8 @@
 # lib/my_gem/railtie.rb
-require 'dataforge'
+require 'migrant'
 require 'rails'
 
-module DataForge
+module Migrant
   class Railtie < Rails::Railtie
     rake_tasks do
       load "tasks/db.rake"

@@ -10,7 +10,7 @@ end
 
 class TestMigrationGenerator < Test::Unit::TestCase
   def run_against_template(template)
-    assert_equal true, DataForge::MigrationGenerator.new.run, "Migration Generator reported an error"
+    assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
     Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
         if migration_file.include?(template)
           correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', template+'.rb')
@@ -26,7 +26,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
 
   context "The migration generator" do
     should "create migrations for all new tables" do
-      assert_equal true, DataForge::MigrationGenerator.new.run, "Migration Generator reported an error"
+      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
       Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
          correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', migration_file.sub(/^.*\d+_/, ''))
          assert_equal(File.open(correct, 'r') { |r| r.read}.strip,
@@ -65,7 +65,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       Business.structure do
         landline :integer # Was previously a string, which obviously may incur data loss      
       end
-      assert_equal(false, DataForge::MigrationGenerator.new.run, "MigrationGenerator ran a dangerous migration!")   
+      assert_equal(false, Migrant::MigrationGenerator.new.run, "MigrationGenerator ran a dangerous migration!")   
       Business.structure do
         landline :text # Undo our bad for the next tests
       end   
@@ -74,7 +74,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
     should "exit immediately if there are pending migrations" do
      manual_migration = Rails.root.join("db/migrate/9999999999999999_my_new_migration.rb")
      File.open(manual_migration, 'w') { |f| f.write ' ' }
-     assert_equal(false, DataForge::MigrationGenerator.new.run)
+     assert_equal(false, Migrant::MigrationGenerator.new.run)
      File.delete(manual_migration)
     end
     
@@ -84,7 +84,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
       # Remove migrations
       ActiveRecord::Base.timestamped_migrations = false
-      assert_equal true, DataForge::MigrationGenerator.new.run, "Migration Generator reported an error"
+      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
       ActiveRecord::Base.timestamped_migrations = true      
       
       assert_equal(Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).select { |migration_file| migration_file.include?('new_field_i_made_up') }.length,

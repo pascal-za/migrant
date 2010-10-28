@@ -1,14 +1,14 @@
 require 'simplecov'
 require 'fileutils'
 
-SimpleCov.adapters.define 'dataforge' do
+SimpleCov.adapters.define 'migrant' do
   add_filter '/test'
   add_filter '/lib/tasks'
   
-  add_group 'Core Extensions', '/lib/dataforge'
+  add_group 'Core Extensions', '/lib/migrant'
   add_group 'Schema Data Types', '/lib/datatype'
 end
-SimpleCov.start 'dataforge'
+SimpleCov.start 'migrant'
 ENV['RAILS_ENV'] = 'test'
 
 require 'rubygems'
@@ -21,7 +21,7 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
 
-require 'dataforge'
+require 'migrant'
 
 # Reset database
 db_path = File.join(File.dirname(__FILE__), 'rails_app', 'db', 'test.sqlite3')

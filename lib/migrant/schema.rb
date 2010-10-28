@@ -1,9 +1,9 @@
-module DataForge
+module Migrant
   # Converts the following DSL:
   #
   # class MyModel < ActiveRecord::Base
   #   structure do
-  #     my_field DataForge::Paragraph
+  #     my_field "some string"
   #    end
   # end
   # into a schema on that model class by calling method_missing(my_field)
@@ -46,7 +46,7 @@ module DataForge
     
     # This is where we decide what the best schema is based on the structure requirements
     # The output of this is essentially a formatted schema hash that is processed 
-    # on each model by DataForge::MigrationGenerator
+    # on each model by Migrant::MigrationGenerator
     def method_missing(*args, &block)
       field = args.slice!(0)
       data_type = (args.first.nil?)? DataType::String : args.slice!(0)

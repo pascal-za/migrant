@@ -4,7 +4,7 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "dataforge"
+    gem.name = "migrant"
     gem.summary = %Q{All the fun of ActiveRecord, without the hassles of migrations and form generation}
     gem.description = %Q{Provides schema generation based on example data, automatic migration generation, and automatic forms with customizable styling and other win}
     gem.email = "101pascal@gmail.com"
@@ -40,7 +40,7 @@ Rake::RDocTask.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title = "dataforge #{version}"
+  rdoc.title = "migrant #{version}"
   rdoc.rdoc_files.include('README*')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end

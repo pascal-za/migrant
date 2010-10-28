@@ -1,4 +1,4 @@
-module DataForge
+module Migrant
   class MigrationGenerator
     TABS = '  ' # Tabs to spaces * 2
     NEWLINE = "\n  "
