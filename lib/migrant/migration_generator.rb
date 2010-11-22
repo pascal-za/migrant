@@ -13,7 +13,7 @@ module Migrant
       # Get all tables and compare to the desired schema
       # The next line is an evil hack to recursively load all model files in app/models
       # This needs to be done because Rails normally lazy-loads these files, resulting a blank descendants list of AR::Base
-      Dir["#{Rails.root.to_s}/app/models/**/*.rb"].each { |f| load(f) } if ActiveRecord::Base.descendants.blank?
+      Dir["#{Rails.root.to_s}/app/models/**/*.rb"].each { |f| load(f) }
 
       ActiveRecord::Base.descendants.each do |model|
         next if model.schema.nil? || !model.schema.requires_migration? # Skips inherited schemas (such as models with STI)
