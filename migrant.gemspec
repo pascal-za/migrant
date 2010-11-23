@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "0.1.2"
+  s.version = "0.1.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2010-11-22}
+  s.date = %q{2010-11-23}
   s.description = %q{Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper) and generates all your migrations for you so you can spend more time coding the stuff that counts!}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
@@ -25,6 +25,7 @@ Gem::Specification.new do |s|
     "lib/datatype/boolean.rb",
     "lib/datatype/currency.rb",
     "lib/datatype/date.rb",
+    "lib/datatype/fixnum.rb",
     "lib/datatype/float.rb",
     "lib/datatype/foreign_key.rb",
     "lib/datatype/hash.rb",
@@ -69,7 +70,6 @@ Gem::Specification.new do |s|
     "test/rails_app/config/initializers/session_store.rb",
     "test/rails_app/config/locales/en.yml",
     "test/rails_app/config/routes.rb",
-    "test/rails_app/db/schema.rb",
     "test/rails_app/db/seeds.rb",
     "test/rails_app/lib/tasks/.gitkeep",
     "test/rails_app/public/404.html",
@@ -116,7 +116,6 @@ Gem::Specification.new do |s|
     "test/rails_app/config/initializers/secret_token.rb",
     "test/rails_app/config/initializers/session_store.rb",
     "test/rails_app/config/routes.rb",
-    "test/rails_app/db/schema.rb",
     "test/rails_app/db/seeds.rb",
     "test/rails_app/test/performance/browsing_test.rb",
     "test/rails_app/test/test_helper.rb",
@@ -141,26 +140,23 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<ansi>, ["= 1.2.2"])
       s.add_development_dependency(%q<turn>, ["= 0.8.1"])
       s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
-      s.add_development_dependency(%q<simplecov>, [">= 0.3.5"])
-      s.add_runtime_dependency(%q<activerecord>, [">= 3.0.0"])
-      s.add_runtime_dependency(%q<activesupport>, [">= 3.0.0"])
+      s.add_development_dependency(%q<simplecov>, ["= 0.3.5"])
+      s.add_runtime_dependency(%q<rails>, [">= 3.0.0"])
     else
       s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
       s.add_dependency(%q<ansi>, ["= 1.2.2"])
       s.add_dependency(%q<turn>, ["= 0.8.1"])
       s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
-      s.add_dependency(%q<simplecov>, [">= 0.3.5"])
-      s.add_dependency(%q<activerecord>, [">= 3.0.0"])
-      s.add_dependency(%q<activesupport>, [">= 3.0.0"])
+      s.add_dependency(%q<simplecov>, ["= 0.3.5"])
+      s.add_dependency(%q<rails>, [">= 3.0.0"])
     end
   else
     s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
     s.add_dependency(%q<ansi>, ["= 1.2.2"])
     s.add_dependency(%q<turn>, ["= 0.8.1"])
     s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
-    s.add_dependency(%q<simplecov>, [">= 0.3.5"])
-    s.add_dependency(%q<activerecord>, [">= 3.0.0"])
-    s.add_dependency(%q<activesupport>, [">= 3.0.0"])
+    s.add_dependency(%q<simplecov>, ["= 0.3.5"])
+    s.add_dependency(%q<rails>, [">= 3.0.0"])
   end
 end
 
