@@ -6,5 +6,6 @@ class Review < ActiveRecord::Base
     name
     rating  -5..5
     body    "Lots of text\nMore text\nMore lines. Etc."
+    views   550
   end
 end

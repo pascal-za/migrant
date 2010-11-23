@@ -6,6 +6,7 @@ class CreateReviews < ActiveRecord::Migration
       t.string :name
       t.integer :rating, :limit=>1
       t.text :body
+      t.integer :views
     end
     add_index :reviews, :business_id
     add_index :reviews, :user_id

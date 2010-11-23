@@ -21,13 +21,13 @@ module Migrant
       structure {}
     end
     
-    def mock(recursive=true)
+    def mock(attributes={}, recursive=true)
       attribs = @schema.columns.reject { |column| column.is_a?(DataType::ForeignKey)}.collect { |name, data_type| [name, data_type.mock] }.flatten
       # Only recurse to one level, otherwise things get way too complicated
       if recursive
         attribs += self.reflect_on_all_associations(:belongs_to).collect do |association| 
                     begin
-                      (association.klass.respond_to?(:mock))? [association.name, association.klass.mock(false)] : nil
+                      (association.klass.respond_to?(:mock))? [association.name, association.klass.mock({}, false)] : nil
                     rescue NameError; nil; end # User hasn't defined association, just skip it
                    end.compact.flatten
       end

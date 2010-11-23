@@ -55,6 +55,7 @@ end
 require 'datatype/boolean'
 require 'datatype/currency'
 require 'datatype/date'
+require 'datatype/fixnum'
 require 'datatype/float'
 require 'datatype/foreign_key'
 require 'datatype/hash'

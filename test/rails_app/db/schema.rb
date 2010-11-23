@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101122122964) do
+ActiveRecord::Schema.define(:version => 20101123130523) do
 
   create_table "business_categories", :force => true do |t|
     t.integer  "business_id"
@@ -61,6 +61,7 @@ ActiveRecord::Schema.define(:version => 20101122122964) do
     t.string  "name"
     t.integer "rating",      :limit => 1
     t.text    "body"
+    t.integer "views"
   end
 
   add_index "reviews", ["business_id"], :name => "index_reviews_on_business_id"
