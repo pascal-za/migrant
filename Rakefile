@@ -14,9 +14,8 @@ begin
     gem.add_development_dependency "ansi", "= 1.2.2"
     gem.add_development_dependency "turn", "= 0.8.1"  
     gem.add_development_dependency "sqlite3-ruby", ">= 0"
-    gem.add_development_dependency "simplecov", ">= 0.3.5"
-    gem.add_dependency "activerecord", ">= 3.0.0"
-    gem.add_dependency "activesupport", ">= 3.0.0"    
+    gem.add_development_dependency "simplecov", "= 0.3.5"
+    gem.add_dependency "rails", ">= 3.0.0"
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
