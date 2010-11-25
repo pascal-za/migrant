@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "0.1.3"
+  s.version = "0.1.4"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2010-11-23}
+  s.date = %q{2010-11-25}
   s.description = %q{Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper) and generates all your migrations for you so you can spend more time coding the stuff that counts!}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
