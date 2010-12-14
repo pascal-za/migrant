@@ -54,6 +54,13 @@ module Migrant
     def add_field(field, data_type = nil, options = {})
       data_type = DataType::String if data_type.nil?
 
+      # Fields that do special things go here.
+      if field == :timestamps
+        add_field(:updated_at, :datetime)
+        add_field(:created_at, :datetime)
+        return true
+      end
+
       # Add index if explicitly asked
       @indexes << field if options.delete(:index) || data_type.class.to_s == 'Hash' && data_type.delete(:index)
       @validations[field] = options.delete(:validates) if options[:validates]
