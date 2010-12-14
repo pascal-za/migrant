@@ -9,23 +9,19 @@ module Migrant
   # into a schema on that model class by calling method_missing(my_field)
   # and deciding what the best schema type is for the user's requiredments
   class Schema
-    # Global scope resolution operators will make the Migrant DSL fucking useless
-    # So, I am doing this rather than inhering from SimpleObject, just live with it.
-  #  instance_methods.each { |m| raise 'fuckoff' if m == 'system' ; undef_method unless ['__send__', 'object_id'].include?(m) }
-
-    attr_accessor :indexes, :columns, :methods_to_alias
+    attr_accessor :indexes, :columns, :validations, :methods_to_alias
 
     def initialize
       @proxy = SchemaProxy.new(self)
       @columns = Hash.new
       @indexes = Array.new
+      @validations = Hash.new
       @methods_to_alias = Array.new
     end
 
     def define_structure(&block)
       # Runs method_missing on columns given in the model "structure" DSL
       @proxy.translate_fancy_dsl(&block) if block_given?
-#      self.instance_eval(&block) if block_given?
     end
 
     def add_associations(associations)
@@ -60,6 +56,8 @@ module Migrant
 
       # Add index if explicitly asked
       @indexes << field if options.delete(:index) || data_type.class.to_s == 'Hash' && data_type.delete(:index)
+      @validations[field] = options.delete(:validates) if options[:validates]
+
       options.merge!(:field => field)
 
       # Matches: description DataType::Paragraph, :index => true
@@ -112,7 +110,7 @@ module Migrant
 
     def method_missing(*args, &block)
       field = args.slice!(0)
-      data_type = args.slice!(0) unless args.first.nil?
+      data_type = args.slice!(0) unless args.first.nil? || args.first.respond_to?(:keys)
 
       @binding.add_field(field, data_type, args.extract_options!)
     end
