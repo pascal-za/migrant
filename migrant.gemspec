@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "0.1.5"
+  s.version = "0.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
@@ -30,7 +30,6 @@ Gem::Specification.new do |s|
     "lib/datatype/fixnum.rb",
     "lib/datatype/float.rb",
     "lib/datatype/foreign_key.rb",
-    "lib/datatype/hash.rb",
     "lib/datatype/polymorphic.rb",
     "lib/datatype/range.rb",
     "lib/datatype/string.rb",
@@ -83,12 +82,14 @@ Gem::Specification.new do |s|
     "test/rails_app/vendor/plugins/.gitkeep",
     "test/test_data_schema.rb",
     "test/test_migration_generator.rb",
+    "test/test_validations.rb",
     "test/verified_output/migrations/business_id.rb",
     "test/verified_output/migrations/create_business_categories.rb",
     "test/verified_output/migrations/create_businesses.rb",
     "test/verified_output/migrations/create_categories.rb",
     "test/verified_output/migrations/create_reviews.rb",
     "test/verified_output/migrations/create_users.rb",
+    "test/verified_output/migrations/created_at.rb",
     "test/verified_output/migrations/estimated_value_notes.rb",
     "test/verified_output/migrations/landline.rb"
   ]
@@ -123,12 +124,14 @@ Gem::Specification.new do |s|
     "test/rails_app/test/test_helper.rb",
     "test/test_data_schema.rb",
     "test/test_migration_generator.rb",
+    "test/test_validations.rb",
     "test/verified_output/migrations/business_id.rb",
     "test/verified_output/migrations/create_business_categories.rb",
     "test/verified_output/migrations/create_businesses.rb",
     "test/verified_output/migrations/create_categories.rb",
     "test/verified_output/migrations/create_reviews.rb",
     "test/verified_output/migrations/create_users.rb",
+    "test/verified_output/migrations/created_at.rb",
     "test/verified_output/migrations/estimated_value_notes.rb",
     "test/verified_output/migrations/landline.rb"
   ]
