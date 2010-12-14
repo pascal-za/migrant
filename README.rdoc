@@ -28,16 +28,16 @@ Start by creating some models with the structure you need:
   end
 
 The best and easiest way is to provide example data and then Migrant will work out the appropriate 
-column type for you.  You can also specify a symbol (like normal migrations), or just omit arguments
-to get a good 'ol varchar(255). One more example model:
+column type for you. Another example covering some more bases:
 
   class User < ActiveRecord::Base
     has_many :businesses
     
     structure do
-      name        "John"
-      surname     "Smith"
-      description :string
+      name                                          # Don't specify any structure to get good 'ol varchar(255)
+      surname     "Smith", :validates => :presence  # You can add your validations in here too to keep DRY
+      description :string                           # Passing a symbol works like it does in add_column
+      timestamps                                    # Gets you a created_at, and updated_at
     end
   end
   
