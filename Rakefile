@@ -9,7 +9,6 @@ rescue Bundler::BundlerError => e
 end
 require 'rake'
 
-
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = "migrant"

@@ -9,19 +9,25 @@ module Migrant
   # into a schema on that model class by calling method_missing(my_field)
   # and deciding what the best schema type is for the user's requiredments
   class Schema
+    # Global scope resolution operators will make the Migrant DSL fucking useless
+    # So, I am doing this rather than inhering from SimpleObject, just live with it.
+  #  instance_methods.each { |m| raise 'fuckoff' if m == 'system' ; undef_method unless ['__send__', 'object_id'].include?(m) }
+
     attr_accessor :indexes, :columns, :methods_to_alias
 
-    def initialize  
+    def initialize
+      @proxy = SchemaProxy.new(self)
       @columns = Hash.new
       @indexes = Array.new
       @methods_to_alias = Array.new
-    end      
-
-    def define_structure(&block)      
-      # Runs method_missing on columns given in the model "structure" DSL
-      self.instance_eval(&block) if block_given?
     end
-    
+
+    def define_structure(&block)
+      # Runs method_missing on columns given in the model "structure" DSL
+      @proxy.translate_fancy_dsl(&block) if block_given?
+#      self.instance_eval(&block) if block_given?
+    end
+
     def add_associations(associations)
       associations.each do |association|
         field = association.options[:foreign_key] || (association.name.to_s+'_id').to_sym
@@ -36,22 +42,21 @@ module Migrant
         end
       end
     end
-    
+
     def requires_migration?
       !(@columns.blank? && @indexes.blank?)
     end
-    
+
     def column_migrations
       @columns.collect {|field, data| [field, data.column] } # All that needs to be migrated
     end
-    
+
     # This is where we decide what the best schema is based on the structure requirements
-    # The output of this is essentially a formatted schema hash that is processed 
+    # The output of this is essentially a formatted schema hash that is processed
     # on each model by Migrant::MigrationGenerator
-    def method_missing(*args, &block)
-      field = args.slice!(0)
-      data_type = (args.first.nil?)? DataType::String : args.slice!(0)
-      options = args.extract_options!
+
+    def add_field(field, data_type = nil, options = {})
+      data_type = DataType::String if data_type.nil?
 
       # Add index if explicitly asked
       @indexes << field if options.delete(:index) || data_type.class.to_s == 'Hash' && data_type.delete(:index)
@@ -74,18 +79,43 @@ module Migrant
       puts [":#{field}", "#{@columns[field].class}", "#{options.inspect}"].collect { |s| s.ljust(25) }.join if ENV['DEBUG']
     end
   end
-  
+
   class InheritedSchema < Schema
     attr_accessor :parent_schema
-    
+
     def initialize(parent_schema)
       @parent_schema = parent_schema
       @columns = Array.new
       @indexes = Array.new
     end
-    
+
     def requires_migration?
       false # All added to base table
     end
   end
+
+  # Why does this class exist? Excellent question.
+  # Basically, Kernel gives a whole bunch of global methods, like system, puts, etc. This is bad because
+  # our DSL relies on being able to translate any arbitrary method into a method_missing call.
+  # So, we call method missing in this happy bubble where these magic methods don't exist.
+  # The reason we don't inherit Schema itself in this way, is that we'd lose direct access to all other classes
+  # derived from Object. Normally this would just mean scope resolution operators all over the class, but the real
+  # killer is that the DSL would need to reference classes in that manner as well, which would reduce sexy factor by at least 100.
+  class SchemaProxy < BasicObject
+    def initialize(binding)
+      @binding = binding
+    end
+
+    def translate_fancy_dsl(&block)
+      self.instance_eval(&block)
+    end
+
+    def method_missing(*args, &block)
+      field = args.slice!(0)
+      data_type = args.slice!(0) unless args.first.nil?
+
+      @binding.add_field(field, data_type, args.extract_options!)
+    end
+  end
 end
+
