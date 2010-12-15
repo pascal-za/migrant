@@ -26,7 +26,7 @@ module Migrant
 
     def add_associations(associations)
       associations.each do |association|
-        field = association.options[:foreign_key] || (association.name.to_s+'_id').to_sym
+        field = association.association_foreign_key.to_sym
         case association.macro
           when :belongs_to
             if association.options[:polymorphic]
@@ -34,7 +34,7 @@ module Migrant
               @indexes << [(association.name.to_s+'_type').to_sym, field]
             end
             @columns[field] = DataType::ForeignKey.new(:field => field)
-            @indexes << (association.name.to_s+'_id').to_sym
+            @indexes << field
         end
       end
     end
