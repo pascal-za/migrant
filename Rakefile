@@ -18,7 +18,7 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/pascalh1011/migrant"
   gem.authors = ["Pascal Houliston"]
   gem.add_development_dependency "bundler"
-  gem.add_runtime_dependency "rails", ">= 3.0.0"
+  gem.add_runtime_dependency "rails"
   # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 end
 Jeweler::RubygemsDotOrgTasks.new
