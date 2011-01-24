@@ -20,5 +20,5 @@ pkg
 
 ## PROJECT::SPECIFIC
 tmp/*
-test/rails_app/db/migrate/*.rb
+test/rails_app/db/migrate/*
 test/rails_app/db/schema.rb

@@ -18,6 +18,12 @@ Jeweler::Tasks.new do |gem|
   gem.homepage = "http://github.com/pascalh1011/migrant"
   gem.authors = ["Pascal Houliston"]
   gem.add_development_dependency "bundler"
+  gem.add_development_dependency "thoughtbot-shoulda"
+  gem.add_development_dependency "ansi"
+  gem.add_development_dependency "jeweler"
+  gem.add_development_dependency "turn"
+  gem.add_development_dependency "sqlite3-ruby"
+  gem.add_development_dependency "simplecov"
   gem.add_runtime_dependency "rails"
   # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 end
