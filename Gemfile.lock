@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    migrant (0.2.1)
+    migrant (0.2.2)
       migrant
       rails
 

@@ -29,6 +29,21 @@ class TestValidations < Test::Unit::TestCase
     user = User.create
     assert(user.errors.include?(:email), "Validation was not applied")
   end
+  
+  should "validate multiple validations via ActiveRecord when an array is given" do
+    Review.structure do
+      name "ABCD", :validates => [:presence, {:length => {:maximum => 4}}]
+    end    
+    
+    not_present = Review.create
+    too_long = Review.create(:name => "Textthatistoolong")
+    correct = Review.create(:name => "ABC")
+    
+    assert(not_present.errors.include?(:name), "primary validation was not applied")
+    assert(too_long.errors.include?(:name), "secondary validation was not applied")
+    assert(!correct.errors.include?(:name), "validation for a correct model failed")
+    
+  end
 
 end
 

@@ -64,7 +64,6 @@ module Migrant
       # Add index if explicitly asked
       @indexes << field if options.delete(:index) || data_type.class.to_s == 'Hash' && data_type.delete(:index)
       @validations[field] = options.delete(:validates) if options[:validates]
-
       options.merge!(:field => field)
 
       # Matches: description DataType::Paragraph, :index => true

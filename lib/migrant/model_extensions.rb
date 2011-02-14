@@ -9,9 +9,13 @@ module Migrant
         @schema ||= Schema.new
         @schema.add_associations(self.reflect_on_all_associations)
         @schema.define_structure(&block)
-        @schema.validations.each do |field, validation|
-          validation = (validation.class == Hash)? validation : { validation => true }
-          self.validates(field, validation)
+        
+        @schema.validations.each do |field, validation_options|
+          validations = (validation_options.class == Array)? validation_options : [validation_options]
+          validations.each do |validation|
+            validation = (validation.class == Hash)? validation : { validation => true }
+            self.validates(field, validation)
+          end
         end
       else
         self.superclass.structure(&block) # For STI, cascade all fields onto the parent model
