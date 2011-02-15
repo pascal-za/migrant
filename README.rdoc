@@ -2,8 +2,9 @@
 
 == Summary
 
-Migrant gives you a clean DSL to describe your database schema (somewhat similar to DataMapper)
-and generates all your migrations for you so you can spend more time coding the tricky stuff!
+Migrant gives you a clean DSL to describe your model schema (somewhat similar to DataMapper)
+that generates your migrations for you and enables you to spend more time on describing your domain
+model cleanly and less time managing your database layer.
 
 You'll also get a handy .mock method to instantiate a filled in model for testing or debugging purposes.
 
@@ -28,7 +29,7 @@ Start by creating some models with the structure you need:
   end
 
 The best and easiest way is to provide example data and then Migrant will work out the appropriate
-column type for you. Another example covering some more bases:
+column type for you. A further example:
 
   class User < ActiveRecord::Base
     has_many :businesses
@@ -38,6 +39,9 @@ column type for you. Another example covering some more bases:
       surname     "Smith", :validates => :presence  # You can add your validations in here too to keep DRY
       description :string                           # Passing a symbol works like it does in add_column
       timestamps                                    # Gets you a created_at, and updated_at
+
+      # Use an array to specifiy multiple validations
+      secret_code 5521, :validates => [:uniqueness, :numericality]
     end
   end
 
