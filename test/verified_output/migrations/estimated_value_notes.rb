@@ -1,4 +1,4 @@
-class BusinessesModifyFieldsEstimatedValueNotes < ActiveRecord::Migration
+class ChangedBusinessesAddedEstimatedValueNotes < ActiveRecord::Migration
   def self.up
     add_column :businesses, :estimated_value, :float
     add_column :businesses, :notes, :string

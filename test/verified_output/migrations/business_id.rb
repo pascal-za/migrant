@@ -1,4 +1,4 @@
-class UsersModifyFieldsBusinessId < ActiveRecord::Migration
+class ChangedUsersAddedBusinessId < ActiveRecord::Migration
   def self.up
     add_column :users, :business_id, :integer
     add_index :users, :business_id

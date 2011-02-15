@@ -10,14 +10,14 @@ You'll also get a handy .mock method to instantiate a filled in model for testin
 == Getting Started
 
 Only for Rails 3 and Ruby 1.9+ folks. Simply install the gem "migrant", or add it to your bundler Gemfile
-    
+
 == Jumping right in
 
 Start by creating some models with the structure you need:
 
   class Business < ActiveRecord::Base
     belongs_to :user
-    
+
     # Here's where you describe the columns in your model
     structure do
       name             "The kernel's favourite fried chickens"
@@ -27,12 +27,12 @@ Start by creating some models with the structure you need:
     end
   end
 
-The best and easiest way is to provide example data and then Migrant will work out the appropriate 
+The best and easiest way is to provide example data and then Migrant will work out the appropriate
 column type for you. Another example covering some more bases:
 
   class User < ActiveRecord::Base
     has_many :businesses
-    
+
     structure do
       name                                          # Don't specify any structure to get good 'ol varchar(255)
       surname     "Smith", :validates => :presence  # You can add your validations in here too to keep DRY
@@ -40,30 +40,35 @@ column type for you. Another example covering some more bases:
       timestamps                                    # Gets you a created_at, and updated_at
     end
   end
-  
+
 Now, to get your database up to date simply run:
 
   > rake db:upgrade
 
-  Wrote db/migrate/20101028192913_create_businesses.rb...  
+  Wrote db/migrate/20101028192913_create_businesses.rb...
   Wrote db/migrate/20101028192916_create_users.rb...
-  
+
 OR, if you'd prefer to look over the migrations yourself first, run:
 
   > rails generate migrations
-  
+
 Result:
 
-  irb(main):001:0> Business                                                                                                                                                                                                                    
-  => Business(id: integer, user_id: integer, name: string, website: string, address: text, date_established: datetime)  
-  
-  irb(main):002:0> Awesome!!!!                                                                                                                                                                                                                    
+  irb(main):001:0> Business
+  => Business(id: integer, user_id: integer, name: string, website: string, address: text, date_established: datetime)
+
+  irb(main):002:0> Awesome!!!!
   NoMethodError: undefined method `Awesome!!!!' for main:Object
-  
+
+By default, your database structure will be cloned to your test environment. If you don't want this to happen
+automatically, simply specify an environment variable directly:
+
+  > rake db:upgrade RAILS_ENV=development
+
 == Want more examples?
 
 Check out the test models in test/rails_app/app/models/*
-  
+
 == What will happen seamlessly
 
 * Creating tables or adding columns (as appropriate)
@@ -75,7 +80,7 @@ Check out the test models in test/rails_app/app/models/*
 
 These actions won't be performed (because we don't want to hurt your data):
 
-* Remove tables/columns 
+* Remove tables/columns
 * Changing column types where data loss may occur (e.g. varchar -> int)
 
 == Getting a mock of your model
@@ -83,9 +88,9 @@ These actions won't be performed (because we don't want to hurt your data):
   > rails console
 
   irb(main):002:0> my_business = Business.mock
-  => #<Business id: nil, name: "The Kernel's favourite fried chickens", website: "http://www.google.co.za/", 
+  => #<Business id: nil, name: "The Kernel's favourite fried chickens", website: "http://www.google.co.za/",
        address: "11 Test Drive\nGardens\nCape Town\nSouth Africa", date_established: "1710-10-28 21:03:31">
-  
+
   irb(main):003:0> my_business.user
   => #<User id: nil, name: "John", surname: "Smith", description: "Some string">
 
@@ -130,5 +135,4 @@ Please be sure to install all the development dependencies from the gemspec, the
 > rake test
 
 Simplecov reports will be generated for each run, if it's not at 100% line coverage, something's wrong!
-
 

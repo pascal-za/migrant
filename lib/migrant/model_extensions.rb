@@ -20,7 +20,6 @@ module Migrant
       else
         self.superclass.structure(&block) # For STI, cascade all fields onto the parent model
         @schema = InheritedSchema.new(self.superclass.schema)
-
       end
     end
 

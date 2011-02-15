@@ -1,4 +1,4 @@
-class BusinessesModifyFieldsLandline < ActiveRecord::Migration
+class ChangedBusinessesModifiedLandline < ActiveRecord::Migration
   def self.up
     change_column :businesses, :landline, :text
   end

@@ -1,4 +1,4 @@
-class BusinessesModifyFieldsUpdatedAtCreatedAt < ActiveRecord::Migration
+class ChangedBusinessesAddedUpdatedAtCreatedAt < ActiveRecord::Migration
   def self.up
     add_column :businesses, :updated_at, :datetime
     add_column :businesses, :created_at, :datetime
