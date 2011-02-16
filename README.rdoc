@@ -77,6 +77,7 @@ Check out the test models in test/rails_app/app/models/*
 
 * Creating tables or adding columns (as appropriate)
 * Adding indexes (happens on foreign keys automatically)
+* Validations (ActiveRecord 3)
 * Changing column types
 * Rollbacks for all the above
 
@@ -86,6 +87,7 @@ These actions won't be performed (because we don't want to hurt your data):
 
 * Remove tables/columns
 * Changing column types where data loss may occur (e.g. varchar -> int)
+* Ruby 1.8 (Hope to get support back in soon)
 
 == Getting a mock of your model
 
@@ -107,11 +109,11 @@ These actions won't be performed (because we don't want to hurt your data):
 == Roadmap / Planned features
 * To be implemented very soon - A :was => [:this,:then,:that] option to rename columns and add an alias method onto models (so as to not break existing code)
 * Rake task to consolidate a given set of migrations (a lot of people like to do this once in a while to keep migration levels sane)
-* Fabricator/Factory integration/seperation
+* Fabricator/Factory integration/seperation - Need to assess how useful this is, then optimize or kill.
 
 == License
 
-Copyright (c) 2010 Pascal Houliston
+Copyright (c) 2011 Pascal Houliston
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
