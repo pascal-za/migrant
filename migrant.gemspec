@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "0.2.4"
+  s.version = "1.0.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2011-02-15}
+  s.date = %q{2011-02-26}
   s.description = %q{Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper) and generates all your migrations for you so you can spend more time coding the stuff that counts!}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
@@ -36,11 +36,14 @@ Gem::Specification.new do |s|
     "lib/datatype/symbol.rb",
     "lib/datatype/time.rb",
     "lib/generators/migrations.rb",
+    "lib/generators/model.rb",
+    "lib/generators/templates/model.rb",
     "lib/migrant.rb",
     "lib/migrant/migration_generator.rb",
     "lib/migrant/model_extensions.rb",
     "lib/migrant/schema.rb",
     "lib/railtie.rb",
+    "lib/simple_object.rb",
     "lib/tasks/db.rake",
     "migrant.gemspec",
     "test/additional_models/review.rb",
@@ -176,9 +179,23 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<turn>, [">= 0"])
       s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<bundler>, [">= 0"])
+      s.add_development_dependency(%q<thoughtbot-shoulda>, [">= 0"])
+      s.add_development_dependency(%q<ansi>, [">= 0"])
+      s.add_development_dependency(%q<jeweler>, [">= 0"])
+      s.add_development_dependency(%q<turn>, [">= 0"])
+      s.add_development_dependency(%q<sqlite3-ruby>, [">= 0"])
+      s.add_development_dependency(%q<simplecov>, [">= 0"])
       s.add_runtime_dependency(%q<rails>, [">= 0"])
     else
       s.add_dependency(%q<migrant>, [">= 0"])
+      s.add_dependency(%q<bundler>, [">= 0"])
+      s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
+      s.add_dependency(%q<ansi>, [">= 0"])
+      s.add_dependency(%q<jeweler>, [">= 0"])
+      s.add_dependency(%q<turn>, [">= 0"])
+      s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
+      s.add_dependency(%q<simplecov>, [">= 0"])
       s.add_dependency(%q<bundler>, [">= 0"])
       s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
       s.add_dependency(%q<ansi>, [">= 0"])
@@ -218,6 +235,13 @@ Gem::Specification.new do |s|
     end
   else
     s.add_dependency(%q<migrant>, [">= 0"])
+    s.add_dependency(%q<bundler>, [">= 0"])
+    s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
+    s.add_dependency(%q<ansi>, [">= 0"])
+    s.add_dependency(%q<jeweler>, [">= 0"])
+    s.add_dependency(%q<turn>, [">= 0"])
+    s.add_dependency(%q<sqlite3-ruby>, [">= 0"])
+    s.add_dependency(%q<simplecov>, [">= 0"])
     s.add_dependency(%q<bundler>, [">= 0"])
     s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
     s.add_dependency(%q<ansi>, [">= 0"])
