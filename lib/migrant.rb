@@ -1,5 +1,4 @@
 require 'active_support'
-#require 'active_support/core_ext/class/attribute_accessors'
 require 'active_record'
 require 'datatype/base'
 require 'migrant/schema'

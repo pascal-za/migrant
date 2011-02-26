@@ -13,10 +13,12 @@ class TestMigrationGenerator < Test::Unit::TestCase
     assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
     Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
         if migration_file.include?(template)
-          correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', template+'.rb')
-          assert_equal(File.open(correct, 'r') { |r| r.read}.strip,
-                       File.open(migration_file, 'r') { |r| r.read}.strip,
-                       "Generated migration #{migration_file} does not match template #{correct}")
+          to_test = File.open(migration_file, 'r') { |r| r.read}.strip
+          File.open(File.join(File.dirname(__FILE__), 'verified_output', 'migrations', template+'.rb'), 'r') do |file|
+            while (line = file.gets)
+              assert_not_nil(to_test.match(line.strip), "Generated migration #{migration_file} missing line: #{line}")
+            end
+          end
           rake_migrate
           return
         end
@@ -28,10 +30,12 @@ class TestMigrationGenerator < Test::Unit::TestCase
     should "create migrations for all new tables" do
       assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
       Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
-         correct = File.join(File.dirname(__FILE__), 'verified_output', 'migrations', migration_file.sub(/^.*\d+_/, ''))
-         assert_equal(File.open(correct, 'r') { |r| r.read}.strip,
-                      File.open(migration_file, 'r') { |r| r.read}.strip,
-                      "Generated migration #{migration_file} does not match template #{correct}")
+         to_test = File.open(migration_file, 'r') { |r| r.read}.strip
+         File.open(File.join(File.dirname(__FILE__), 'verified_output', 'migrations', migration_file.sub(/^.*\d+_/, '')), 'r') do |file|
+           while (line = file.gets)
+             assert_not_nil(to_test.match(line.strip), "Generated migration #{migration_file} missing line: #{line}")
+           end
+         end
       end
       rake_migrate
     end

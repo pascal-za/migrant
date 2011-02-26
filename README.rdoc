@@ -10,11 +10,19 @@ You'll also get a handy .mock method to instantiate a filled in model for testin
 
 == Getting Started
 
-Only for Rails 3 and Ruby 1.9+ folks. Simply install the gem "migrant", or add it to your bundler Gemfile
+In your Gemfile:
+
+  gem "migrant"
+  
+Rails: 3.0+ (Sorry folks, no plans for Rails 2 support)
+Ruby: Tested with 1.8.7 MRI, 1.9.2 MRI, and Rubinius 1.2.1 
+Adapters: Tested with SQLite3, MySQL, MySQL2, Pg. Should work with any AR adapter in theory.
 
 == Jumping right in
 
 Start by creating some models with the structure you need:
+
+  > rails generate migrant:model business
 
   class Business < ActiveRecord::Base
     belongs_to :user
@@ -28,8 +36,9 @@ Start by creating some models with the structure you need:
     end
   end
 
-The best and easiest way is to provide example data and then Migrant will work out the appropriate
-column type for you. A further example:
+Simply specify an example of the type of data you'll be storing, and Migrant will work out the 
+correct database schema for you. Note that you don't need to specify foreign keys in the structure, 
+they are automatically inferred from your relations. Here is a further example:
 
   class User < ActiveRecord::Base
     has_many :businesses
@@ -44,7 +53,7 @@ column type for you. A further example:
       secret_code 5521, :validates => [:uniqueness, :numericality]
     end
   end
-
+  
 Now, to get your database up to date simply run:
 
   > rake db:upgrade
@@ -68,10 +77,20 @@ By default, your database structure will be cloned to your test environment. If 
 automatically, simply specify an environment variable directly:
 
   > rake db:upgrade RAILS_ENV=development
-
+  
 == Want more examples?
 
 Check out the test models in test/rails_app/app/models/*
+
+== Model Generator
+
+  > rails generate migrant:model business name:string website:text
+  
+The model generator works as per the default ActiveRecord one, i.e. you can specify
+fields to be included in the model. However, a migration is not generated immediately,
+but the structure block in the model is automatically filled out for you.
+
+Simply run rake db:upgrade or rails generate migrations to get the required migrations when you're ready.
 
 == What will happen seamlessly
 
@@ -87,7 +106,6 @@ These actions won't be performed (because we don't want to hurt your data):
 
 * Remove tables/columns
 * Changing column types where data loss may occur (e.g. varchar -> int)
-* Ruby 1.8 (Hope to get support back in soon)
 
 == Getting a mock of your model
 
@@ -107,7 +125,6 @@ These actions won't be performed (because we don't want to hurt your data):
 * It's probably a good idea to review the generated migrations before committing to SCM, just to check there's nothing left out.
 
 == Roadmap / Planned features
-* To be implemented very soon - A :was => [:this,:then,:that] option to rename columns and add an alias method onto models (so as to not break existing code)
 * Rake task to consolidate a given set of migrations (a lot of people like to do this once in a while to keep migration levels sane)
 * Fabricator/Factory integration/seperation - Need to assess how useful this is, then optimize or kill.
 
@@ -136,7 +153,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 == Development
 
-Please be sure to install all the development dependencies from the gemspec, then to run tests do:
+Please be sure to install all the development dependencies via Bundler, then to run tests do:
 
 > rake test
 

@@ -10,6 +10,7 @@ module Migrant
     
     generators do
       load "generators/migrations.rb"
+      load "generators/model.rb"
     end
   end
 end
