@@ -31,7 +31,7 @@ Start by creating some models with the structure you need:
     structure do
       name             "The kernel's favourite fried chickens"
       website          "http://www.google.co.za/"
-      address          ["11 Test Drive", "Gardens", "Cape Town" ,"South Africa"].join("\n")
+      address          :text
       date_established Time.now - 300.years
     end
   end
