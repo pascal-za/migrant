@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "1.0.0"
+  s.version = "1.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
@@ -45,6 +45,7 @@ Gem::Specification.new do |s|
     "lib/railtie.rb",
     "lib/simple_object.rb",
     "lib/tasks/db.rake",
+    "migrant.gemspec",
     "test/additional_models/review.rb",
     "test/helper.rb",
     "test/rails_app/.gitignore",
