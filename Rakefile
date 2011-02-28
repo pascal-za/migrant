@@ -13,18 +13,10 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   gem.name = "migrant"
   gem.summary = %Q{All the fun of ActiveRecord, without writing your migrations, and a dash of mocking.}
-  gem.description = %Q{Migrant gives you a super-clean DSL to describe your ActiveRecord models (somewhat similar to DataMapper) and generates all your migrations for you so you can spend more time coding the stuff that counts!}
+  gem.description = %Q{Easier schema management for Rails that compliments your domain model.}
   gem.email = "101pascal@gmail.com"
   gem.homepage = "http://github.com/pascalh1011/migrant"
   gem.authors = ["Pascal Houliston"]
-  gem.add_development_dependency "bundler"
-  gem.add_development_dependency "thoughtbot-shoulda"
-  gem.add_development_dependency "ansi"
-  gem.add_development_dependency "jeweler"
-  gem.add_development_dependency "turn"
-  gem.add_development_dependency "sqlite3-ruby"
-  gem.add_development_dependency "simplecov"
-  gem.add_runtime_dependency "rails"
   # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
 end
 Jeweler::RubygemsDotOrgTasks.new
