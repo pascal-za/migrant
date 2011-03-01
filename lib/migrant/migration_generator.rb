@@ -3,6 +3,9 @@ module Migrant
     TABS = '  ' # Tabs to spaces * 2
     NEWLINE = "\n  "
     def run
+      # Ensure db/migrate path exists before starting
+      FileUtils.mkdir_p(Rails.root.join('db', 'migrate'))
+ 
       migrator = ActiveRecord::Migrator.new(:up, migrations_path)
 
       unless migrator.pending_migrations.blank?

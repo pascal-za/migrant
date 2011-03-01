@@ -83,7 +83,7 @@ PLATFORMS
 DEPENDENCIES
   ansi
   jeweler
-  rails
+  rails (>= 3.0.0)
   simplecov
   sqlite3
   thoughtbot-shoulda

@@ -1,6 +1,6 @@
 source :gemcutter
 
-gem "rails"
+gem "rails", ">= 3.0.0"
 
 group :development do
   gem "thoughtbot-shoulda"
