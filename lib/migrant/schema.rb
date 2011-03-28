@@ -28,7 +28,8 @@ module Migrant
 
     def add_associations(associations)
       associations.each do |association|
-        field = association.association_foreign_key.to_sym
+        # Rails 3.1 changes primary_key_name to foreign_key (correct behaviour), so this is essentially backwards compatibility for Rails 3.0
+        field = (association.respond_to?(:foreign_key))? association.foreign_key.to_sym : association.primary_key_name.to_sym
         case association.macro
           when :belongs_to
             if association.options[:polymorphic]
