@@ -30,7 +30,7 @@ module Migrant
     end
 
     def mock(attributes={}, recursive=true)
-      attribs = @schema.columns.reject { |column| column.is_a?(DataType::ForeignKey)}.collect { |name, data_type| [name, data_type.mock] }.flatten
+      attribs = @schema.columns.collect { |name, data_type| [name, data_type.mock] }.flatten
 
       # Only recurse to one level, otherwise things get way too complicated
       if recursive

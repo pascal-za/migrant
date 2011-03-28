@@ -14,7 +14,7 @@ module DataType
     end
     
     def mock
-      @value || ((self.column[:type] == :text)? %W{Several lines of long text.}.join("\n") : "Some string")
+      @value || ((self.column[:type] == :text)? self.class.long_text_mock : self.class.default_mock )
     end
   end
 end

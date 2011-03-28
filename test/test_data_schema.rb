@@ -39,7 +39,6 @@ class TestDataSchema < Test::Unit::TestCase
     end
     
     should "generate a text column when given a long paragraph" do
-      assert_schema(Business, :description, :type => :text)
       assert_schema(Business, :address, :type => :text)      
     end
     
@@ -67,6 +66,10 @@ class TestDataSchema < Test::Unit::TestCase
     
     should "generate a string column when an email example or class is given" do
       assert_schema(User, :email, :type => :string)    
+    end
+    
+    should "generate the column type specified by the :as key irrespective of the data type" do
+    
     end
     
     should "generate indexes for all foreign keys automatically" do

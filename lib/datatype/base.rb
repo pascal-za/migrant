@@ -1,3 +1,5 @@
+require 'faker'
+
 module DataType
   class DangerousMigration < Exception; end;
 
@@ -9,8 +11,10 @@ module DataType
     def initialize(options={})
       @options = options
       @value = options.delete(:value)
+      @example = options.delete(:example)
       @field = options.delete(:field)
       @aliases = options.delete(:was) || Array.new
+      options[:type] = options.delete(:as) if options[:as] # Nice little DSL alias for 'type'      
     end
 
     # Default is 'ye good ol varchar(255)
@@ -22,8 +26,17 @@ module DataType
       @value || self.class.default_mock
     end
 
+    # Default mock should be overridden in derived classes
     def self.default_mock
-      "Some string"
+      short_text_mock
+    end
+    
+    def self.long_text_mock    
+      (1..3).to_a.collect { Faker::Lorem.paragraph }.join("\n")
+    end
+    
+    def self.short_text_mock
+      Faker::Lorem.sentence
     end
 
     # Decides if and how a column will be changed

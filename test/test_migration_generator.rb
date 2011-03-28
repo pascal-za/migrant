@@ -101,25 +101,33 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert_equal(Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).select { |migration_file| migration_file.include?('new_field_i_made_up') }.length,
                    1,
                    "Migration should have been generated (without a duplicate)")
+      rake_migrate                   
     end
 
     should "recursively generate mocks for every model" do
       BusinessCategory.structure do
-        test_currency_mockup DataType::Currency
-        test_date_mockup DataType::Date
-        test_float_mockup DataType::Float
-        test_range_mockup DataType::Range
-
+        test_mockup_of_text :text
+        test_mockup_of_string :string
+        test_mockup_of_integer :integer
+        test_mockup_of_float   :float
+        test_mockup_of_datetime :datetime
+        test_mockup_of_currency DataType::Currency
       end
-      BusinessCategory.belongs_to(:nonexistant_class, :polymorphic => true)
+
+      BusinessCategory.belongs_to(:notaclass, :polymorphic => true)
       assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
       rake_migrate
       BusinessCategory.reset_column_information
       mock = BusinessCategory.mock
       assert_not_nil(mock)
-      # TODO: Spice this up a bit .. it covers everything, but doesn't test output
+      assert(mock.test_mockup_of_text.is_a?(String))
+      assert(mock.test_mockup_of_string.is_a?(String))
+      assert(mock.test_mockup_of_integer.is_a?(Fixnum))
+      assert(mock.test_mockup_of_float.is_a?(Float))
+      assert(mock.test_mockup_of_currency.is_a?(BigDecimal))    
+      assert(mock.test_mockup_of_datetime.is_a?(Time))    
+      assert(DataType::Base.default_mock.is_a?(String))
     end
-
   end
 end
 
