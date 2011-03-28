@@ -10,7 +10,7 @@ class Business < ActiveRecord::Base
     website          "http://www.google.co.za/", :was => [:site, :homepage]
     address          ["11 Test Drive", "Gardens", "Cape Town" ,"South Africa"].join("\n")
     summary          :string
-    description      :text
+    description      "Founded in 1898", :as => :text
     landline         :string
     mobile           :string
     operating_days   0..6
