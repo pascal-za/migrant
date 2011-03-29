@@ -129,6 +129,11 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert(mock.test_mockup_of_datetime.is_a?(Time))    
       assert(DataType::Base.default_mock.is_a?(String))
     end
+        
+    should "generate example mocks for an inherited model when STI is in effect" do
+#      assert_equal("$5.00", Customer.mock.money_spent)
+      assert_equal("somebody@somewhere.com", Customer.mock.email)
+    end
   end
 end
 

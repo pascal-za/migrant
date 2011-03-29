@@ -68,10 +68,6 @@ class TestDataSchema < Test::Unit::TestCase
       assert_schema(User, :email, :type => :string)    
     end
     
-    should "generate the column type specified by the :as key irrespective of the data type" do
-    
-    end
-    
     should "generate indexes for all foreign keys automatically" do
       assert_contains(Business.schema.indexes, :user_id, 'Missing index on belongs_to')
       assert_contains(Business.schema.indexes, [:owner_type, :owner_id], 'Missing index on polymorphic belongs_to')      
@@ -82,6 +78,7 @@ class TestDataSchema < Test::Unit::TestCase
     should "generate indexes on any column when explicitly asked to" do
       assert_contains(Category.schema.indexes, :title, 'Missing index on :index => true column')
     end 
+
 
   end
 
