@@ -44,6 +44,12 @@ module Migrant
       end
       new Hash[*attribs].merge(attributes)
     end
+    
+    def mock!(attributes={})
+      returning mock(attributes) do |mock|
+        mock.save!
+      end
+    end
   end
 end
 

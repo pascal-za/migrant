@@ -118,7 +118,8 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
       rake_migrate
       BusinessCategory.reset_column_information
-      mock = BusinessCategory.mock
+      BusinessCategory.mock!
+      mock = BusinessCategory.last
       assert_not_nil(mock)
       assert(mock.test_mockup_of_text.is_a?(String))
       assert(mock.test_mockup_of_string.is_a?(String))
