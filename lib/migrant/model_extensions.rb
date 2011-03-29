@@ -46,7 +46,7 @@ module Migrant
     end
     
     def mock!(attributes={})
-      returning mock(attributes) do |mock|
+      mock(attributes).tap do |mock|
         mock.save!
       end
     end

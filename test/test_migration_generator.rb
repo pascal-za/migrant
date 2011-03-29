@@ -131,8 +131,20 @@ class TestMigrationGenerator < Test::Unit::TestCase
     end
         
     should "generate example mocks for an inherited model when STI is in effect" do
-#      assert_equal("$5.00", Customer.mock.money_spent)
+      assert_equal(5.00, Customer.mock.average_rating)
       assert_equal("somebody@somewhere.com", Customer.mock.email)
+    end
+    
+    should "remove extraneous text from a filename too large for the operating system" do
+      BusinessCategory.structure do
+        a_very_very_long_field_indeed_far_too_long_for_any_good_use_really true
+        a_very_very_long_field_indeed_far_too_long_for_any_good_use_really_2 true
+        a_very_very_long_field_indeed_far_too_long_for_any_good_use_really_3 true
+      end
+      
+      BusinessCategory.belongs_to(:verylongclassthatissuretogenerateaverylargeoutputfilename, :polymorphic => true)
+      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      rake_migrate
     end
   end
 end

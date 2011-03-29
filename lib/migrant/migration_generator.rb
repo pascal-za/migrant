@@ -86,8 +86,14 @@ module Migrant
 
         # Indexes
          # down_code += NEWLINE+TABS+model.schema.indexes.collect { |fields| "remove_index :#{model.table_name}, #{fields.inspect}"}.join(NEWLINE+TABS)
-        filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
-        File.open(filename, 'w') { |migration| migration.write(migration_template(activity, up_code, down_code)) }
+        begin
+          filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
+          File.open(filename, 'w') { |migration| migration.write(migration_template(activity, up_code, down_code)) }
+        rescue Errno::ENAMETOOLONG
+          activity = activity.split('_')[0..2].join('_')
+          filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
+          File.open(filename, 'w') { |migration| migration.write(migration_template(activity, up_code, down_code)) }
+        end
         puts "Wrote #{filename}..."
       end
       true
