@@ -30,6 +30,8 @@ module Migrant
     end
 
     def mock(attributes={}, recursive=true)
+      return self.superclass.mock(attributes, recursive) unless self.superclass == ActiveRecord::Base
+      
       attribs = @schema.columns.collect { |name, data_type| [name, data_type.mock] }.flatten
 
       # Only recurse to one level, otherwise things get way too complicated
