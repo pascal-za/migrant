@@ -10,7 +10,7 @@ SimpleCov.adapters.define 'migrant' do
   add_group 'Core Extensions', '/lib/migrant'
   add_group 'Schema Data Types', '/lib/datatype'
 end
-#SimpleCov.start 'migrant'
+SimpleCov.start 'migrant'
 ENV['RAILS_ENV'] = 'test'
 
 require 'rubygems'
