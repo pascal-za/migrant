@@ -30,8 +30,12 @@ module Migrant
     end
 
     def mock(attributes={}, recursive=true)
-      return self.superclass.mock(attributes, recursive) unless self.superclass == ActiveRecord::Base
-      
+      attribs = {}
+      attribs.merge!(self.superclass.mock_attributes(attributes, recursive)) unless self.superclass == ActiveRecord::Base
+      new attribs.merge(mock_attributes(attributes, recursive))
+    end
+    
+    def mock_attributes(attributes={}, recursive=true)
       attribs = @schema.columns.collect { |name, data_type| [name, data_type.mock] }.flatten
 
       # Only recurse to one level, otherwise things get way too complicated
@@ -42,7 +46,7 @@ module Migrant
                     rescue NameError; nil; end # User hasn't defined association, just skip it
                    end.compact.flatten
       end
-      new Hash[*attribs].merge(attributes)
+      Hash[*attribs].merge(attributes)
     end
     
     def mock!(attributes={})
