@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2011-03-28}
+  s.date = %q{2011-04-01}
   s.description = %q{Easier schema management for Rails that compliments your domain model.}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
@@ -42,6 +42,7 @@ Gem::Specification.new do |s|
     "lib/migrant/migration_generator.rb",
     "lib/migrant/model_extensions.rb",
     "lib/migrant/schema.rb",
+    "lib/pickle/migrant.rb",
     "lib/railtie.rb",
     "lib/simple_object.rb",
     "lib/tasks/db.rake",
