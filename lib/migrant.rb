@@ -1,6 +1,6 @@
 require 'active_support'
 require 'active_record'
-require 'datatype/base'
+require 'dsl/data_type'
 require 'migrant/schema'
 require 'migrant/model_extensions'
 require 'migrant/migration_generator'
