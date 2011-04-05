@@ -37,7 +37,7 @@ module Migrant
             next if changes.blank?
             changed_fields, added_fields = [], []
 
-            up_code = changes.collect do |field, options|
+            @up_steps = changes.collect do |field, options|
               type = options.delete(:type)
               arguments = (options.blank?)? "" : ", #{options.inspect[1..-2]}"
 
@@ -48,11 +48,12 @@ module Migrant
                 added_fields << field
                 "add_column :#{model.table_name}, :#{field}, :#{type}#{arguments}"
               end
-            end.join(NEWLINE+TABS)
+            end
 
-            activity = 'changed_'+model.table_name+[(added_fields.blank?)? nil : '_added_'+added_fields.join('_'), (changed_fields.blank?)? nil : '_modified_'+changed_fields.join('_')].compact.join('_and_')
-
-            down_code = changes.collect do |field, options|
+            @activity = 'changed_'+model.table_name+[(added_fields.blank?)? nil : '_added_'+added_fields.join('_'), (changed_fields.blank?)? nil : '_modified_'+changed_fields.join('_')].compact.join('_and_')
+            @activity = @activity.split('_')[0..2].join('_') if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
+            
+            @down_steps = changes.collect do |field, options|
               if db_schema[field]
                 type = db_schema[field].delete(:type)
                 arguments = (db_schema[field].blank?)? "" : ", #{db_schema[field].inspect[1..-2]}"
@@ -60,40 +61,34 @@ module Migrant
               else
                 "remove_column :#{model.table_name}, :#{field}"
               end
-            end.join(NEWLINE+TABS)
+            end
 
             # For adapters that can report indexes, add as necessary
             if ActiveRecord::Base.connection.respond_to?(:indexes)
               current_indexes = ActiveRecord::Base.connection.indexes(model.table_name).collect { |index| (index.columns.length == 1)? index.columns.first.to_sym : index.columns.collect(&:to_sym) }
-              up_code += model.schema.indexes.uniq.collect do |index|
+              @up_steps += model.schema.indexes.uniq.collect do |index|
                 unless current_indexes.include?(index)
-                  NEWLINE+TABS+"add_index :#{model.table_name}, #{index.inspect}"
+                  "add_index :#{model.table_name}, #{index.inspect}"
                 end
-              end.compact.join
+              end.compact
             end
+            render('change_migration')
         else
-          activity = "create_#{model.table_name}"
-          up_code = "create_table :#{model.table_name} do |t|"+NEWLINE+model_schema.collect do |field, options|
+          @activity = "create_#{model.table_name}"
+          @columns = model_schema.collect do |field, options|
             type = options.delete(:type)
             options.delete(:was) # Aliases not relevant when creating a new table
             arguments = (options.blank?)? "" : ", #{options.inspect[1..-2]}"
-            (TABS*2)+"t.#{type} :#{field}#{arguments}"
-          end.join(NEWLINE)+NEWLINE+TABS+"end"
+            "t.#{type} :#{field}#{arguments}"
+          end
 
-          down_code = "drop_table :#{model.table_name}"
-          up_code   += NEWLINE+TABS+model.schema.indexes.collect { |fields| "add_index :#{model.table_name}, #{fields.inspect}"}.join(NEWLINE+TABS)
+          @indexes = model.schema.indexes.collect { |fields| "add_index :#{model.table_name}, #{fields.inspect}"}
+          @table_name = model.table_name
+          render("create_migration")
         end
-
-        # Indexes
-         # down_code += NEWLINE+TABS+model.schema.indexes.collect { |fields| "remove_index :#{model.table_name}, #{fields.inspect}"}.join(NEWLINE+TABS)
-        begin
-          filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
-          File.open(filename, 'w') { |migration| migration.write(migration_template(activity, up_code, down_code)) }
-        rescue Errno::ENAMETOOLONG
-          activity = activity.split('_')[0..2].join('_')
-          filename = "#{migrations_path}/#{next_migration_number}_#{activity}.rb"
-          File.open(filename, 'w') { |migration| migration.write(migration_template(activity, up_code, down_code)) }
-        end
+       
+        filename = "#{migrations_path}/#{next_migration_number}_#{@activity}.rb"
+        File.open(filename, 'w') { |migration| migration.write(@output) }
         puts "Wrote #{filename}..."
       end
       true
@@ -121,16 +116,8 @@ module Migrant
       end
     end
 
-    def migration_template(activity, up_code, down_code)
-      "class #{activity.camelize.gsub(/\s/, '')} < ActiveRecord::Migration
-  def self.up
-    #{up_code}
-  end
-  
-  def self.down
-    #{down_code}
-  end
-end"
+    def render(template_name)
+      @output = ERB.new(File.read(File.join(File.dirname(__FILE__), "../generators/templates/#{template_name}.rb"))).result(binding)
     end
   end
 end
