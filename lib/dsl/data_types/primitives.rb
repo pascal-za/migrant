@@ -38,6 +38,12 @@ module DataType
     end
   end  
   
+  class Bignum < Fixnum
+    def column
+      {:type => :integer, :limit => ((@value.size > 8)? @value.size : 8) }
+    end
+  end
+  
   class Float < Base
     def column
       {:type => :float}
