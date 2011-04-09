@@ -7,10 +7,15 @@ def rake_migrate
    end
 end
 
-
 class TestMigrationGenerator < Test::Unit::TestCase
+  def generate_migrations
+    Profiler.run(:migration_generator) do
+      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+    end    
+  end
+
   def run_against_template(template)
-    assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+    generate_migrations
     Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
         if migration_file.include?(template)
           to_test = File.open(migration_file, 'r') { |r| r.read}.strip
@@ -28,7 +33,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
 
   context "The migration generator" do
     should "create migrations for all new tables" do
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
          to_test = File.open(migration_file, 'r') { |r| r.read}.strip
          File.open(File.join(File.dirname(__FILE__), 'verified_output', 'migrations', migration_file.sub(/^.*\d+_/, '')), 'r') do |file|
@@ -95,7 +100,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
       # Remove migrations
       ActiveRecord::Base.timestamped_migrations = false
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       ActiveRecord::Base.timestamped_migrations = true
 
       assert_equal(Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).select { |migration_file| migration_file.include?('new_field_i_made_up') }.length,
@@ -115,7 +120,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
 
       BusinessCategory.belongs_to(:notaclass, :polymorphic => true)
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       rake_migrate
       BusinessCategory.reset_column_information
       BusinessCategory.mock!
@@ -144,7 +149,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
       
       BusinessCategory.belongs_to(:verylongclassthatissuretogenerateaverylargeoutputfilename, :polymorphic => true)
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       rake_migrate
     end
   end

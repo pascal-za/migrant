@@ -10,4 +10,5 @@ group :development do
   gem "turn"
   gem "sqlite3"
   gem "simplecov"
+  gem "terminal-table"
 end

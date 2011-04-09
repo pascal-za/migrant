@@ -17,13 +17,35 @@ require 'rubygems'
 require 'turn' # For nicer output
 require 'test/unit'
 require 'shoulda'
+require 'terminal-table/import'
 
 # Must be loaded before appropriate models so we get class method extensions
 $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 $LOAD_PATH.unshift(File.dirname(__FILE__))
 
-
 require 'migrant'
+
+class Profiler
+  @@results = {}
+
+  def self.run(name, &block)
+    start = Time.now.to_f
+    yield
+    @@results[name] ||= {:total => 0.0, :calls => 0}
+    @@results[name][:total] += Time.now.to_f - start 
+    @@results[name][:calls] += 1
+  end
+
+  def self.results
+    unless @@results.keys.empty?
+      results = table do |t|
+        t.headings = ['Name', 'Calls', 'Total (ms)', 'Average (ms)']
+        @@results.collect { |name, result| [name, result[:calls], (result[:total]*1000.0).round, (result[:total] / result[:calls] * 1000.0).round] }.each { |row| t << row }
+      end
+      puts results
+    end
+  end
+end
 
 # Reset database
 db_path = File.join(File.dirname(__FILE__), 'rails_app', 'db', 'test.sqlite3')
@@ -38,3 +60,4 @@ require File.join(File.dirname(__FILE__), 'rails_app', 'config', 'environment')
 
 class Test::Unit::TestCase
 end
+

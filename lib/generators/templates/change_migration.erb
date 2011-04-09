@@ -6,7 +6,7 @@ class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration
   <% @changed_columns.each do |field, options, old_options| %>
     change_column :<%= @table_name %>, :<%= field %>, :<%= options.delete(:type) %><%= (options.blank?)? '': ", "+options.inspect[1..-2] %>
   <% end -%>
-  <% @indexes.each do |index| %>
+  <% @indexes.each do |index, options| %>
     add_index :<%= @table_name %>, <%= index.inspect %>
   <% end -%>
   end

@@ -23,48 +23,47 @@ module Migrant
       ActiveRecord::Base.descendants.each do |model|
         next if model.schema.nil? || !model.schema.requires_migration? # Skips inherited schemas (such as models with STI)
         model.reset_column_information # db:migrate doesn't do this
-        model_schema = model.schema.column_migrations
         @table_name = model.table_name
 
         if model.table_exists?
           # Structure ActiveRecord::Base's column information so we can compare it directly to the schema
           db_schema = Hash[*model.columns.collect {|c| [c.name.to_sym, Hash[*[:type, :limit].map { |type| [type, c.send(type)] }.flatten]  ] }.flatten]
-            changes = model.schema.columns.collect do |name, data_type|
-              begin
-                [name, data_type.structure_changes_from(db_schema[name])]
-              rescue DataType::DangerousMigration
-                puts "Cannot generate migration automatically for #{model.table_name}, this would involve possible data loss on column: #{name}\nOld structure: #{db_schema[name].inspect}. New structure: #{data_type.column.inspect}\nPlease create and run this migration yourself (with the appropriate data integrity checks)"
-                return false
+          @changed_columns, @added_columns = [], []
+          model.schema.columns.each do |field_name, data_type|
+            begin
+              if (options = data_type.structure_changes_from(db_schema[field_name]))
+                if db_schema[field_name]
+                  @changed_columns << [field_name, options, db_schema[field_name]]
+                else
+                  @added_columns << [field_name, options]
+                end
               end
-            end.reject { |change| change[1].nil? }
-            next if changes.blank?
-            @changed_columns, @added_columns = [], []
-               
-            # Fields to add/remove         
-            changes.each do |field, options|
-              if db_schema[field]
-                @changed_columns << [field, options, db_schema[field]]
-              else
-                @added_columns << [field, options]
-              end
+            rescue DataType::DangerousMigration
+              puts "Cannot generate migration automatically for #{model.table_name}, this would involve possible data loss on column: #{field_name}\nOld structure: #{db_schema[field_name].inspect}. New structure: #{data_type.column.inspect}\nPlease create and run this migration yourself (with the appropriate data integrity checks)"
+              return false
             end
+          end
 
-            # For adapters that can report indexes, add as necessary
-            if ActiveRecord::Base.connection.respond_to?(:indexes)
-              current_indexes = ActiveRecord::Base.connection.indexes(model.table_name).collect { |index| (index.columns.length == 1)? index.columns.first.to_sym : index.columns.collect(&:to_sym) }
-              @indexes = model.schema.indexes.uniq.reject { |index| current_indexes.include?(index) }
-            end
+          # For adapters that can report indexes, add as necessary
+          if ActiveRecord::Base.connection.respond_to?(:indexes)
+            current_indexes = ActiveRecord::Base.connection.indexes(model.table_name).collect { |index| (index.columns.length == 1)? index.columns.first.to_sym : index.columns.collect(&:to_sym) }
+            @indexes = model.schema.indexes.uniq.reject { |index| current_indexes.include?(index) }.collect { |field_name| [field_name, {}]  }
+            # Don't spam the user with indexes that columns are being created with
+            @new_indexes = @indexes.reject { |index, options| @changed_columns.detect { |c| c.first == index } || @added_columns.detect { |c| c.first == index } }
+          end
 
-            # Example: changed_table_added_something_and_modified_something
-            @activity = 'changed_'+model.table_name+[['added', @added_columns], ['modified', @changed_columns]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:first).join('_') }.join('_and_')
-            @activity = @activity.split('_')[0..2].join('_') if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
-            
-            render('change_migration')
+          next if @changed_columns.empty? && @added_columns.empty? && @indexes.empty? # Nothing to do for this table
+
+          # Example: changed_table_added_something_and_modified_something
+          @activity = 'changed_'+model.table_name+[['added', @added_columns], ['modified', @changed_columns], ['indexed', @new_indexes]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:first).join('_') }.join('_and')
+          @activity = @activity.split('_')[0..2].join('_') if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
+          
+          render('change_migration')
         else
           @activity = "create_#{model.table_name}"
-          @columns = model_schema
+          @columns = model.schema.column_migrations
           @indexes = model.schema.indexes
-          
+
           render("create_migration")
         end
        
