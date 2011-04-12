@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "1.1.1"
+  s.version = "1.1.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2011-04-01}
+  s.date = %q{2011-04-12}
   s.description = %q{Easier schema management for Rails that compliments your domain model.}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
@@ -17,26 +17,21 @@ Gem::Specification.new do |s|
     "README.rdoc"
   ]
   s.files = [
+    ".rvmrc",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE",
     "README.rdoc",
     "Rakefile",
     "VERSION",
-    "lib/datatype/base.rb",
-    "lib/datatype/boolean.rb",
-    "lib/datatype/currency.rb",
-    "lib/datatype/date.rb",
-    "lib/datatype/fixnum.rb",
-    "lib/datatype/float.rb",
-    "lib/datatype/foreign_key.rb",
-    "lib/datatype/polymorphic.rb",
-    "lib/datatype/range.rb",
-    "lib/datatype/string.rb",
-    "lib/datatype/symbol.rb",
-    "lib/datatype/time.rb",
+    "lib/dsl/data_type.rb",
+    "lib/dsl/data_types/primitives.rb",
+    "lib/dsl/data_types/semantic.rb",
     "lib/generators/migrations.rb",
     "lib/generators/model.rb",
+    "lib/generators/templates/change_migration.erb",
+    "lib/generators/templates/create_migration.erb",
+    "lib/generators/templates/create_migration.rb",
     "lib/generators/templates/model.rb",
     "lib/migrant.rb",
     "lib/migrant/migration_generator.rb",
@@ -87,6 +82,7 @@ Gem::Specification.new do |s|
     "test/test_data_schema.rb",
     "test/test_migration_generator.rb",
     "test/test_validations.rb",
+    "test/test_zzz_performance.rb",
     "test/verified_output/migrations/business_id.rb",
     "test/verified_output/migrations/create_business_categories.rb",
     "test/verified_output/migrations/create_businesses.rb",
@@ -129,6 +125,7 @@ Gem::Specification.new do |s|
     "test/test_data_schema.rb",
     "test/test_migration_generator.rb",
     "test/test_validations.rb",
+    "test/test_zzz_performance.rb",
     "test/verified_output/migrations/business_id.rb",
     "test/verified_output/migrations/create_business_categories.rb",
     "test/verified_output/migrations/create_businesses.rb",
@@ -152,6 +149,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<turn>, [">= 0"])
       s.add_development_dependency(%q<sqlite3>, [">= 0"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
+      s.add_development_dependency(%q<terminal-table>, [">= 0"])
     else
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<faker>, [">= 0"])
@@ -161,6 +159,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<turn>, [">= 0"])
       s.add_dependency(%q<sqlite3>, [">= 0"])
       s.add_dependency(%q<simplecov>, [">= 0"])
+      s.add_dependency(%q<terminal-table>, [">= 0"])
     end
   else
     s.add_dependency(%q<rails>, [">= 3.0.0"])
@@ -171,6 +170,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<turn>, [">= 0"])
     s.add_dependency(%q<sqlite3>, [">= 0"])
     s.add_dependency(%q<simplecov>, [">= 0"])
+    s.add_dependency(%q<terminal-table>, [">= 0"])
   end
 end
 
