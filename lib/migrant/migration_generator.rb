@@ -29,7 +29,7 @@ module Migrant
           # Structure ActiveRecord::Base's column information so we can compare it directly to the schema
           db_schema = Hash[*model.columns.collect {|c| [c.name.to_sym, Hash[*[:type, :limit].map { |type| [type, c.send(type)] }.flatten]  ] }.flatten]
           @changed_columns, @added_columns = [], []
-          model.schema.columns.each do |field_name, data_type|
+          model.schema.columns.to_a.sort { |a,b| a.to_s <=> b.to_s }.each do |field_name, data_type|
             begin
               if (options = data_type.structure_changes_from(db_schema[field_name]))
                 if db_schema[field_name]
