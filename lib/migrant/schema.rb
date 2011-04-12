@@ -11,17 +11,17 @@ module Migrant
   # into a schema on that model class by calling method_missing(my_field)
   # and deciding what the best schema type is for the user's requiredments
   class Schema
-    attr_accessor :indexes, :columns, :validations, :methods_to_alias
+    attr_accessor :indexes, :columns, :validations
 
     def initialize
       @proxy = SchemaProxy.new(self)
       @columns = Hash.new
       @indexes = Array.new
       @validations = Hash.new
-      @methods_to_alias = Array.new
     end
 
     def define_structure(&block)
+      @validations = Hash.new
       # Runs method_missing on columns given in the model "structure" DSL
       @proxy.translate_fancy_dsl(&block) if block_given?
     end
@@ -56,7 +56,8 @@ module Migrant
 
     def add_field(field, data_type = nil, options = {})
       data_type = DataType::String if data_type.nil?
-
+      puts [":#{field}", "#{data_type}", "#{options.inspect}"].collect { |s| s.ljust(25) }.join if ENV['DEBUG']
+      
       # Fields that do special things go here.
       if field == :timestamps
         add_field(:updated_at, :datetime)
@@ -83,8 +84,8 @@ module Migrant
           @columns[field] = DataType::Base.new(options)
         end
       end
-      puts [":#{field}", "#{@columns[field].class}", "#{options.inspect}"].collect { |s| s.ljust(25) }.join if ENV['DEBUG']
     end
+
   end
 
   class InheritedSchema < Schema
