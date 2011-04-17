@@ -21,6 +21,11 @@ module DataType
     def column
       {:type => :string}.merge(@options)
     end
+            
+    def ==(compared_column)
+      # Ideally we should compare attributes, but unfortunately not all drivers report enough statistics for this
+      column[:type] == compared_column[:type]
+    end
 
     def mock
       @value || self.class.default_mock

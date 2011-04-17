@@ -1,14 +1,14 @@
 module Migrant
   module ModelExtensions
     attr_accessor :schema
-    def structure(&block)
+    def structure(type=nil, &block)
       # Using instance_*evil* to get the neater DSL on the models.
       # So, my_field in the structure block actually calls Migrant::Schema.my_field
 
       if self.superclass == ActiveRecord::Base
         @schema ||= Schema.new
         @schema.add_associations(self.reflect_on_all_associations)
-        @schema.define_structure(&block)
+        @schema.define_structure(type, &block)
         
         @schema.validations.each do |field, validation_options|
           validations = (validation_options.class == Array)? validation_options : [validation_options]

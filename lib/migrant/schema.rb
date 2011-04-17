@@ -20,8 +20,10 @@ module Migrant
       @validations = Hash.new
     end
 
-    def define_structure(&block)
+    def define_structure(type=:default, &block)
       @validations = Hash.new
+      @type = type
+      
       # Runs method_missing on columns given in the model "structure" DSL
       @proxy.translate_fancy_dsl(&block) if block_given?
     end
@@ -45,6 +47,11 @@ module Migrant
     def requires_migration?
       !(@columns.blank? && @indexes.blank?)
     end
+
+    # If the user defines structure(:partial), irreversible changes are ignored (removing a column, for example)    
+    def partial?
+      @type == :partial
+    end    
 
     def column_migrations
       @columns.collect {|field, data| [field, data.column] } # All that needs to be migrated

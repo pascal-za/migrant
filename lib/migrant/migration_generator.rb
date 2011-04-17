@@ -2,8 +2,10 @@ require 'erubis'
 
 module Migrant
   class MigrationGenerator
-    TABS = '  ' # Tabs to spaces * 2
-    NEWLINE = "\n  "
+    def initialize
+      @changed_columns, @added_columns, @deleted_columns, @renamed_columns, @transferred_columns = [], [], [], [], []    
+    end
+  
     def run
       # Ensure db/migrate path exists before starting
       FileUtils.mkdir_p(Rails.root.join('db', 'migrate'))
@@ -28,19 +30,46 @@ module Migrant
         if model.table_exists?
           # Structure ActiveRecord::Base's column information so we can compare it directly to the schema
           db_schema = Hash[*model.columns.collect {|c| [c.name.to_sym, Hash[*[:type, :limit].map { |type| [type, c.send(type)] }.flatten]  ] }.flatten]
-          @changed_columns, @added_columns = [], []
           model.schema.columns.to_a.sort { |a,b| a.to_s <=> b.to_s }.each do |field_name, data_type|
             begin
               if (options = data_type.structure_changes_from(db_schema[field_name]))
                 if db_schema[field_name]
-                  @changed_columns << [field_name, options, db_schema[field_name]]
+                  change_column(field_name, options, db_schema[field_name])
                 else
-                  @added_columns << [field_name, options]
+                  add_column(field_name, options)
                 end
               end
             rescue DataType::DangerousMigration
               puts "Cannot generate migration automatically for #{model.table_name}, this would involve possible data loss on column: #{field_name}\nOld structure: #{db_schema[field_name].inspect}. New structure: #{data_type.column.inspect}\nPlease create and run this migration yourself (with the appropriate data integrity checks)"
               return false
+            end
+          end
+          
+          # Removed rows
+          unless model.schema.partial?
+            db_schema.reject { |field_name, options| field_name.to_s == model.primary_key || model.schema.columns.keys.include?(field_name) }.each do |removed_field_name, options|
+              case ask_user("#{model}: '#{removed_field_name}' is no longer in use.", (@added_columns.blank?)? %W{Destroy Ignore} : %W{Destroy Move Ignore})
+                when 'Destroy' then delete_column(removed_field_name)
+                when 'Move' then
+                  target = ask_user("Move '#{removed_field_name}' to:", @added_columns.collect(&:first))
+                  target_column = model.schema.columns[target]
+                  begin
+                    target_column.structure_changes_from(db_schema[removed_field_name])
+                    move_column(removed_field_name, target, db_schema[removed_field_name], target_column)
+                  rescue DataType::DangerousMigration
+                    case ask_user("Columns '#{removed_field_name}' and '#{target}' are incompatible and data loss may occur.", ['Move anyway', 'Cancel move', 'Delete column'])
+                      when 'Delete column' then delete_column(removed_field_name)
+                      when 'Move anyway' then move_column(removed_field_name, target, db_schema[removed_field_name], target_column)
+                    end
+                  end
+              end
+            end 
+            
+            unless @deleted_columns.blank?
+              if ask_user("#{model} columns: '#{@deleted_columns.join(', ')}' and associated data will be DESTROYED in all environments. Continue?", %W{Yes No}) == 'No'
+                puts "Okay, not removing anything for now."
+                @deleted_columns = []
+              end
             end
           end
 
@@ -75,8 +104,38 @@ module Migrant
     end
 
     private
+    def add_column(name, options)
+      @added_columns << [name, options]
+    end
+    
+    def change_column(name, new_schema, old_schema)
+      @changed_columns << [name, new_schema, old_schema]
+    end
+    
+    def delete_column(name)
+      @deleted_columns << name
+    end
+    
+    def move_column(old_name, new_name, old_schema, new_schema)
+      if new_schema == old_schema
+        @renamed_columns << [old_name, new_name]
+        @added_columns.reject! { |a| a.first == new_name } # Don't add the column too
+      else
+        @transferred_columns << [old_name, new_name] # Still need to add the column, just transfer the data afterwards
+      end
+    end
+    
     def migrations_path
       Rails.root.join(ActiveRecord::Migrator.migrations_path)
+    end
+    
+    def ask_user(message, choices)
+      begin
+        STDOUT.print "#{message} [#{choices.collect { |c| '('+c[0,1].upcase+')'+c[1, c.length] }.join(' / ')}]: "
+        STDOUT.flush
+        input = STDIN.gets.downcase
+      end until (choice = choices.detect { |c| input.strip[0,1] == c[0,1].downcase })
+      choice
     end
 
     # See ActiveRecord::Generators::Migration
