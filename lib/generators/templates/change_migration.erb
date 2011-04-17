@@ -6,17 +6,37 @@ class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration
   <% @changed_columns.each do |field, options, old_options| %>
     change_column :<%= @table_name %>, :<%= field %>, :<%= options.delete(:type) %><%= (options.blank?)? '': ", "+options.inspect[1..-2] %>
   <% end -%>
+  <% @transferred_columns.each do |source, target| %>
+    puts "-- copy data from :<%= source %> to :<%= target %>"
+    <%= @table_name.classify %>.update_all(:<%= target %> => :<%= source %>)
+  <% end -%>  
+  <% @renamed_columns.each do |old_name, new_name| %>
+    rename_column :<%= @table_name %>, :<%= old_name %>, :<%= new_name %>
+  <% end -%>
+  <% @deleted_columns.each do |field, options| %>
+    remove_column :<%= @table_name %>, :<%= field %>
+  <% end -%>  
   <% @indexes.each do |index, options| %>
     add_index :<%= @table_name %>, <%= index.inspect %>
   <% end -%>
   end
   
   def self.down
-  <% @added_columns.each do |field, options| %>
-    remove_column :<%= @table_name %>, :<%= field %>
-  <% end -%>
+  <% @deleted_columns.each do |field, options| %>
+    add_column :<%= @table_name %>, :<%= field %>, :<%= options.delete(:type) %><%= (options.blank?)? '': ", "+options.inspect[1..-2] %>
+  <% end -%>  
+  <% @renamed_columns.each do |old_name, new_name| %>
+    rename_column :<%= @table_name %>, :<%= new_name %>, :<%= old_name %>
+  <% end -%>    
+  <% @transferred_columns.each do |source, target| %>
+    puts "-- copy data from :<%= target %> to :<%= source %>"    
+    <%= @table_name.classify %>.update_all(:<%= source %> => :<%= target %>)
+  <% end -%>  
   <% @changed_columns.each do |field, options, old_options| %>
     change_column :<%= @table_name %>, :<%= field %>, :<%= old_options.delete(:type) %><%= (old_options.blank?)? '': ", "+old_options.inspect[1..-2] %>
+  <% end -%>
+  <% @added_columns.each do |field, options| %>
+    remove_column :<%= @table_name %>, :<%= field %>
   <% end -%>
   end
 end

@@ -18,12 +18,13 @@ module Migrant
       @columns = Hash.new
       @indexes = Array.new
       @validations = Hash.new
+      @type = :default
     end
 
-    def define_structure(type=:default, &block)
+    def define_structure(type, &block)
       @validations = Hash.new
-      @type = type
-      
+      @type = type if type
+
       # Runs method_missing on columns given in the model "structure" DSL
       @proxy.translate_fancy_dsl(&block) if block_given?
     end
