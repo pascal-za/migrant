@@ -132,7 +132,7 @@ module Migrant
     include Term::ANSIColor
     def ask_user(message, choices, warning=false)
       begin
-        message = "> #{message} [#{choices.collect { |c| '('+c[0,1].upcase+')'+c[1, c.length] }.join(' / ')}]: "
+        message = "> #{message} [#{choices.collect { |c| '('+c.to_s[0,1].upcase+')'+c.to_s[1, c.to_s.length] }.join(' / ')}]: "
         if warning
           STDOUT.print red, bold, message, reset
         else
@@ -140,7 +140,7 @@ module Migrant
         end
         STDOUT.flush
         input = STDIN.gets.downcase
-      end until (choice = choices.detect { |c| input.strip[0,1] == c[0,1].downcase })
+      end until (choice = choices.detect { |c| input.strip[0,1] == c.to_s[0,1].downcase })
       choice
     end
 
