@@ -33,6 +33,10 @@ class TestDataSchema < Test::Unit::TestCase
     should "generate a smallint column when given a small range" do
       assert_schema(Business, :operating_days, :limit => 1, :type => :integer)
     end
+    
+    should "generate a large integer (size 8) for any bignum types" do
+      assert_schema(Category, :serial_number, :limit => 8, :type => :integer)
+    end
 
     should "generate a string column when given a sentence" do
       assert_schema(Business, :summary, :type => :string)

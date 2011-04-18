@@ -7,16 +7,21 @@ def rake_migrate
    end
 end
 
-
 class TestMigrationGenerator < Test::Unit::TestCase
+  def generate_migrations
+    Profiler.run(:migration_generator) do
+      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+    end    
+  end
+
   def run_against_template(template)
-    assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+    generate_migrations
     Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
         if migration_file.include?(template)
           to_test = File.open(migration_file, 'r') { |r| r.read}.strip
           File.open(File.join(File.dirname(__FILE__), 'verified_output', 'migrations', template+'.rb'), 'r') do |file|
             while (line = file.gets)
-              assert_not_nil(to_test.match(line.strip), "Generated migration #{migration_file} missing line: #{line}")
+              assert_not_nil(to_test.gsub(/[\.\(\)]/, '').match(line.gsub(/[\.\(\)]/, '').strip), "Generated migration #{migration_file} missing line: #{line.gsub(/[\.\(\)]/, '').strip}")
             end
           end
           rake_migrate
@@ -28,7 +33,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
 
   context "The migration generator" do
     should "create migrations for all new tables" do
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
          to_test = File.open(migration_file, 'r') { |r| r.read}.strip
          File.open(File.join(File.dirname(__FILE__), 'verified_output', 'migrations', migration_file.sub(/^.*\d+_/, '')), 'r') do |file|
@@ -95,7 +100,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
       # Remove migrations
       ActiveRecord::Base.timestamped_migrations = false
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       ActiveRecord::Base.timestamped_migrations = true
 
       assert_equal(Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).select { |migration_file| migration_file.include?('new_field_i_made_up') }.length,
@@ -115,7 +120,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
 
       BusinessCategory.belongs_to(:notaclass, :polymorphic => true)
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       rake_migrate
       BusinessCategory.reset_column_information
       BusinessCategory.mock!
@@ -144,8 +149,58 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
       
       BusinessCategory.belongs_to(:verylongclassthatissuretogenerateaverylargeoutputfilename, :polymorphic => true)
-      assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
+      generate_migrations
       rake_migrate
+    end
+
+
+
+    
+    should "remove columns when requested and confirmed by the user" do
+      Chameleon.structure 
+      Chameleon.reset_structure!
+      Chameleon.no_structure
+      
+      STDIN._mock_responses('D', 'y')
+      run_against_template('deleted_incompatible_spot')
+    end
+    
+    
+    should "successfully rename a column missing from the schema to a new column specified by the user" do
+      Chameleon.structure do
+        old_spots
+      end
+      generate_migrations
+      rake_migrate
+      Chameleon.reset_structure!
+      Chameleon.structure do
+        new_spots
+      end
+      STDIN._mock_responses('M', 'new_spots')
+      run_against_template('renamed_old_spots')
+    end
+    
+    should "transfer data to an new incompatible column if confirmed by the user" do
+      Chameleon.reset_column_information
+      Chameleon.create!(:new_spots => "22")
+      Chameleon.reset_structure!      
+      Chameleon.structure do
+        new_integery_spots 100
+      end
+      STDIN._mock_responses('M', 'new_integery_spots', 'M')
+      run_against_template('moved_new_spots')
+      Chameleon.reset_column_information
+      assert_equal(Chameleon.first.new_integery_spots, 22)
+    end
+    
+    should "remove any column if a user elects to when a column can't be moved due to incompatible types" do
+      Chameleon.reset_structure!  
+      Chameleon.structure do
+        incompatible_spot 5
+      end
+      
+      STDIN._mock_responses('M', 'incompatible_spot', 'D', 'Y')
+      run_against_template('added_incompatible_spot_and_deleted_spots')
     end
   end
 end

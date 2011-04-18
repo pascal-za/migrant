@@ -21,6 +21,11 @@ module DataType
     def column
       {:type => :string}.merge(@options)
     end
+            
+    def ==(compared_column)
+      # Ideally we should compare attributes, but unfortunately not all drivers report enough statistics for this
+      column[:type] == compared_column[:type]
+    end
 
     def mock
       @value || self.class.default_mock
@@ -62,18 +67,24 @@ module DataType
 
     def self.migrant_data_type?; true; end
   end
+  
+ 
 end
 
-# And all the data types we offer...
-require 'datatype/boolean'
-require 'datatype/currency'
-require 'datatype/date'
-require 'datatype/fixnum'
-require 'datatype/float'
-require 'datatype/foreign_key'
-require 'datatype/polymorphic'
-require 'datatype/range'
-require 'datatype/string'
-require 'datatype/symbol'
-require 'datatype/time'
+require 'dsl/data_types/primitives'
+require 'dsl/data_types/semantic'
 
+# Add internal types used by Migrant
+module DataType
+  class Polymorphic < Base; end
+
+  class ForeignKey < Fixnum
+    def column
+      {:type => :integer}
+    end
+    
+    def self.default_mock
+      nil # Will get overridden later by ModelExtensions
+    end
+  end
+end

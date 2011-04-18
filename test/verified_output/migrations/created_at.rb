@@ -1,4 +1,4 @@
-class ChangedBusinessesAddedUpdatedAtCreatedAt < ActiveRecord::Migration
+class ChangedBusinessesAddedCreatedAtUpdatedAt < ActiveRecord::Migration
   def self.up
     add_column :businesses, :updated_at, :datetime
     add_column :businesses, :created_at, :datetime
