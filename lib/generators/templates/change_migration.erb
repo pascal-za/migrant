@@ -8,7 +8,7 @@ class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration
   <% end -%>
   <% @transferred_columns.each do |source, target| %>
     puts "-- copy data from :<%= source %> to :<%= target %>"
-    <%= @table_name.classify %>.update_all(:<%= target %> => :<%= source %>)
+    <%= @table_name.classify %>.update_all("<%= target %> = <%= source %>")
   <% end -%>  
   <% @renamed_columns.each do |old_name, new_name| %>
     rename_column :<%= @table_name %>, :<%= old_name %>, :<%= new_name %>
@@ -30,7 +30,7 @@ class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration
   <% end -%>    
   <% @transferred_columns.each do |source, target| %>
     puts "-- copy data from :<%= target %> to :<%= source %>"    
-    <%= @table_name.classify %>.update_all(:<%= source %> => :<%= target %>)
+    <%= @table_name.classify %>.update_all("<%= source %> = <%= target %>")
   <% end -%>  
   <% @changed_columns.each do |field, options, old_options| %>
     change_column :<%= @table_name %>, :<%= field %>, :<%= old_options.delete(:type) %><%= (old_options.blank?)? '': ", "+old_options.inspect[1..-2] %>

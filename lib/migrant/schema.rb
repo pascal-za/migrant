@@ -46,7 +46,7 @@ module Migrant
     end
 
     def requires_migration?
-      !(@columns.blank? && @indexes.blank?)
+      true
     end
 
     # If the user defines structure(:partial), irreversible changes are ignored (removing a column, for example)    

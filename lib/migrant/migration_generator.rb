@@ -62,13 +62,12 @@ module Migrant
                   end
               end
             end 
-            
-            destroyed_columns = @deleted_columns.reject { |field, options| @transferred_columns.collect(&:first).include?(field) }.collect(&:first)
-            unless destroyed_columns.blank?
-              if ask_user("#{model} columns: '#{destroyed_columns.join(', ')}' and associated data will be DESTROYED in all environments. Continue?", %W{Yes No}, true) == 'No'
-                puts "Okay, not removing anything for now."
-                @deleted_columns = []
-              end
+          end
+          destroyed_columns = @deleted_columns.reject { |field, options| @transferred_columns.collect(&:first).include?(field) }
+          unless destroyed_columns.blank?
+            if ask_user("#{model} columns: '#{destroyed_columns.collect(&:first).join(', ')}' and associated data will be DESTROYED in all environments. Continue?", %W{Yes No}, true) == 'No'
+              puts "Okay, not removing anything for now."
+              @deleted_columns = []
             end
           end
 
@@ -83,7 +82,7 @@ module Migrant
           next if @changed_columns.empty? && @added_columns.empty? && @renamed_columns.empty? && @transferred_columns.empty? && @deleted_columns.empty? && @indexes.empty? # Nothing to do for this table
 
           # Example: changed_table_added_something_and_modified_something
-          @activity = 'changed_'+model.table_name+[['added', @added_columns], ['modified', @changed_columns], ['deleted', @deleted_columns], 
+          @activity = 'changed_'+model.table_name+[['added', @added_columns], ['modified', @changed_columns], ['deleted', destroyed_columns], 
           ['moved', @transferred_columns], ['renamed', @renamed_columns], ['indexed', @new_indexes]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:first).join('_') }.join('_and')
           @activity = @activity.split('_')[0..2].join('_') if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
           

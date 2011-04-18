@@ -28,6 +28,10 @@ module Migrant
     def no_structure
       structure {}
     end
+    
+    def reset_structure!
+      @schema = nil
+    end
 
     def mock(attributes={}, recursive=true)
       attribs = {}

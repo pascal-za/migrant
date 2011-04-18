@@ -47,6 +47,22 @@ class Profiler
   end
 end
 
+# Mock some stubs on STDIN's eigenclass so we can fake user input
+class << STDIN
+  # Simple mock for simulating user inputs
+  def _mock_responses(*responses)
+    @_responses ||= []
+    @_responses += responses
+  end
+  
+  def gets
+    raise "STDIN.gets() called but no mocks to return. Did you set them up with _mock_responses()?" if @_responses.blank?
+    @_responses.slice!(0).tap do |response|
+      STDOUT.puts "{ANSWERED WITH: #{response}}"
+    end
+  end
+end
+
 # Reset database
 db_path = File.join(File.dirname(__FILE__), 'rails_app', 'db', 'test.sqlite3')
 File.delete(db_path) if File.exists?(db_path)
