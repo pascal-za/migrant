@@ -6,6 +6,7 @@ module Migrant
     def run
       # Ensure db/migrate path exists before starting
       FileUtils.mkdir_p(Rails.root.join('db', 'migrate'))
+      @possible_irreversible_migrations = false
  
       migrator = ActiveRecord::Migrator.new(:up, migrations_path)
 
@@ -38,7 +39,7 @@ module Migrant
                 end
               end
             rescue DataType::DangerousMigration
-              puts "Cannot generate migration automatically for #{model.table_name}, this would involve possible data loss on column: #{field_name}\nOld structure: #{db_schema[field_name].inspect}. New structure: #{data_type.column.inspect}\nPlease create and run this migration yourself (with the appropriate data integrity checks)"
+              log "Cannot generate migration automatically for #{model.table_name}, this would involve possible data loss on column: #{field_name}\nOld structure: #{db_schema[field_name].inspect}. New structure: #{data_type.column.inspect}\nPlease create and run this migration yourself (with the appropriate data integrity checks)", :error
               return false
             end
           end
@@ -55,9 +56,8 @@ module Migrant
                     target_column.structure_changes_from(db_schema[removed_field_name])
                     move_column(removed_field_name, target, db_schema[removed_field_name], target_column)
                   rescue DataType::DangerousMigration
-                    case ask_user("Moving '#{removed_field_name}' to '#{target}' is non-reversable and data loss may occur.", ['Move anyway', 'Cancel move', 'Delete column'], true)
-                      when 'Delete column' then delete_column(removed_field_name, db_schema[removed_field_name])
-                      when 'Move anyway' then move_column(removed_field_name, target, db_schema[removed_field_name], target_column)
+                    case ask_user("Unable to safely move '#{removed_field_name}' to '#{target}'. Keep the original column for now?", %W{Yes No}, true)
+                      when 'No' then delete_column(removed_field_name, db_schema[removed_field_name])
                     end
                   end
               end
@@ -65,8 +65,8 @@ module Migrant
           end
           destroyed_columns = @deleted_columns.reject { |field, options| @transferred_columns.collect(&:first).include?(field) }
           unless destroyed_columns.blank?
-            if ask_user("#{model} columns: '#{destroyed_columns.collect(&:first).join(', ')}' and associated data will be DESTROYED in all environments. Continue?", %W{Yes No}, true) == 'No'
-              puts "Okay, not removing anything for now."
+            if ask_user("#{model}: '#{destroyed_columns.collect(&:first).join(', ')}' and associated data will be DESTROYED in all environments. Continue?", %W{Yes No}, true) == 'No'
+              log "Okay, not removing anything for now."
               @deleted_columns = []
             end
           end
@@ -97,8 +97,13 @@ module Migrant
        
         filename = "#{migrations_path}/#{next_migration_number}_#{@activity}.rb"
         File.open(filename, 'w') { |migration| migration.write(@output) }
-        puts "Wrote #{filename}..."
+        log "Wrote #{filename}..."
       end
+      
+      if @possible_irreversible_migrations
+        log "*** One or more move operations were performed, which potentially could cause data loss on db:rollback. \n*** Please review your migrations before committing!", :warning
+      end
+      
       true
     end
 
@@ -120,6 +125,7 @@ module Migrant
         @renamed_columns << [old_name, new_name]
         @added_columns.reject! { |a| a.first == new_name } # Don't add the column too
       else
+        @possible_irreversible_migrations = true
         @transferred_columns << [old_name, new_name] # Still need to add the column, just transfer the data afterwards
         delete_column(old_name, old_schema)
       end
@@ -131,8 +137,16 @@ module Migrant
     
     include Term::ANSIColor
     def ask_user(message, choices, warning=false)
+      mappings = choices.uniq.inject({}) do |mappings, choice|
+        choice.length.times do |i|
+          mappings.merge!(choice.to_s[i..i] => choice) and break unless mappings.keys.include?(choice.to_s[i..i])
+        end
+        mappings.merge!(choice.to_s => choice) unless mappings.values.include?(choice)
+        mappings
+      end
+      
       begin
-        message = "> #{message} [#{choices.collect { |c| '('+c[0,1].upcase+')'+c[1, c.length] }.join(' / ')}]: "
+        message = "> #{message} [#{mappings.collect { |shortcut, choice| choice.to_s.sub(shortcut, '('+shortcut+')') }.join(' / ')}]: "
         if warning
           STDOUT.print red, bold, message, reset
         else
@@ -140,10 +154,22 @@ module Migrant
         end
         STDOUT.flush
         input = STDIN.gets.downcase
-      end until (choice = choices.detect { |c| input.strip[0,1] == c[0,1].downcase })
-      choice
+      end until (choice = mappings.detect { |shortcut, choice| [shortcut.downcase,choice.to_s.downcase].include?(input.downcase.strip) })
+      choice.last
     end
-
+    
+    def log(message, type=:info)
+      STDOUT.puts(
+        case type
+          when :error
+            [red, bold, message, reset]
+          when :warning
+            [yellow, message, reset]
+          else
+            message
+        end
+      )
+    end
     # See ActiveRecord::Generators::Migration
     # Only generating a migration to each second is a problem.. because we generate everything in the same second
     # So we have to add further "pretend" seconds. This WILL cause problems.

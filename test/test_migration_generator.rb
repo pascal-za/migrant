@@ -153,9 +153,6 @@ class TestMigrationGenerator < Test::Unit::TestCase
       rake_migrate
     end
 
-
-
-    
     should "remove columns when requested and confirmed by the user" do
       Chameleon.structure 
       Chameleon.reset_structure!
@@ -180,17 +177,17 @@ class TestMigrationGenerator < Test::Unit::TestCase
       run_against_template('renamed_old_spots')
     end
     
-    should "transfer data to an new incompatible column if confirmed by the user" do
+    should "transfer data to an new incompatible column if the operation is safe" do
       Chameleon.reset_column_information
       Chameleon.create!(:new_spots => "22")
       Chameleon.reset_structure!      
       Chameleon.structure do
-        new_integery_spots 100
+        new_longer_spots "100", :as => :text
       end
-      STDIN._mock_responses('M', 'new_integery_spots', 'M')
-      run_against_template('moved_new_spots')
+      STDIN._mock_responses('M', 'new_longer_spots', 'M')
+      run_against_template('chameleons_added_new_longer_spots_and_moved_new_spots')
       Chameleon.reset_column_information
-      assert_equal(Chameleon.first.new_integery_spots, 22)
+      assert_equal(Chameleon.first.new_longer_spots, "22")
     end
     
     should "remove any column if a user elects to when a column can't be moved due to incompatible types" do
@@ -199,7 +196,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
         incompatible_spot 5
       end
       
-      STDIN._mock_responses('M', 'incompatible_spot', 'D', 'Y')
+      STDIN._mock_responses('M', 'incompatible_spot', 'N', 'Y')
       run_against_template('added_incompatible_spot_and_deleted_spots')
     end
   end
