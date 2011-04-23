@@ -138,10 +138,11 @@ module Migrant
     include Term::ANSIColor
     def ask_user(message, choices, warning=false)
       mappings = choices.uniq.inject({}) do |mappings, choice|
-        choice.length.times do |i|
-          mappings.merge!(choice.to_s[i..i] => choice) and break unless mappings.keys.include?(choice.to_s[i..i])
+        choice_string = choice.to_s
+        choice_string.length.times do |i|
+          mappings.merge!(choice_string[i..i] => choice) and break unless mappings.keys.include?(choice_string[i..i])
         end
-        mappings.merge!(choice.to_s => choice) unless mappings.values.include?(choice)
+        mappings.merge!(choice_string => choice) unless mappings.values.include?(choice)
         mappings
       end
       
