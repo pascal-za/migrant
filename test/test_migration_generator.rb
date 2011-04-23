@@ -162,6 +162,17 @@ class TestMigrationGenerator < Test::Unit::TestCase
       run_against_template('deleted_incompatible_spot')
     end
     
+    should "not remove columns when the user does not confirm" do
+      Chameleon.reset_structure!
+      Chameleon.no_structure
+      
+      STDIN._mock_responses('D', 'n')
+      generate_migrations
+      rake_migrate
+      Chameleon.structure do
+        spots
+      end
+    end
     
     should "successfully rename a column missing from the schema to a new column specified by the user" do
       Chameleon.structure do
