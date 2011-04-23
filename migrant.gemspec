@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "1.1.2"
+  s.version = "1.2.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2011-04-12}
+  s.date = %q{2011-04-23}
   s.description = %q{Easier schema management for Rails that compliments your domain model.}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
@@ -52,6 +52,7 @@ Gem::Specification.new do |s|
     "test/rails_app/app/models/business.rb",
     "test/rails_app/app/models/business_category.rb",
     "test/rails_app/app/models/category.rb",
+    "test/rails_app/app/models/chameleon.rb",
     "test/rails_app/app/models/customer.rb",
     "test/rails_app/app/models/user.rb",
     "test/rails_app/app/views/layouts/application.html.erb",
@@ -83,15 +84,21 @@ Gem::Specification.new do |s|
     "test/test_migration_generator.rb",
     "test/test_validations.rb",
     "test/test_zzz_performance.rb",
+    "test/verified_output/migrations/added_incompatible_spot_and_deleted_spots.rb",
     "test/verified_output/migrations/business_id.rb",
+    "test/verified_output/migrations/chameleons_added_new_longer_spots_and_moved_new_spots.rb",
     "test/verified_output/migrations/create_business_categories.rb",
     "test/verified_output/migrations/create_businesses.rb",
     "test/verified_output/migrations/create_categories.rb",
+    "test/verified_output/migrations/create_chameleons.rb",
     "test/verified_output/migrations/create_reviews.rb",
     "test/verified_output/migrations/create_users.rb",
     "test/verified_output/migrations/created_at.rb",
+    "test/verified_output/migrations/deleted_incompatible_spot.rb",
+    "test/verified_output/migrations/deleted_spots.rb",
     "test/verified_output/migrations/estimated_value_notes.rb",
-    "test/verified_output/migrations/landline.rb"
+    "test/verified_output/migrations/landline.rb",
+    "test/verified_output/migrations/renamed_old_spots.rb"
   ]
   s.homepage = %q{http://github.com/pascalh1011/migrant}
   s.require_paths = ["lib"]
@@ -105,6 +112,7 @@ Gem::Specification.new do |s|
     "test/rails_app/app/models/business.rb",
     "test/rails_app/app/models/business_category.rb",
     "test/rails_app/app/models/category.rb",
+    "test/rails_app/app/models/chameleon.rb",
     "test/rails_app/app/models/customer.rb",
     "test/rails_app/app/models/user.rb",
     "test/rails_app/config/application.rb",
@@ -126,15 +134,21 @@ Gem::Specification.new do |s|
     "test/test_migration_generator.rb",
     "test/test_validations.rb",
     "test/test_zzz_performance.rb",
+    "test/verified_output/migrations/added_incompatible_spot_and_deleted_spots.rb",
     "test/verified_output/migrations/business_id.rb",
+    "test/verified_output/migrations/chameleons_added_new_longer_spots_and_moved_new_spots.rb",
     "test/verified_output/migrations/create_business_categories.rb",
     "test/verified_output/migrations/create_businesses.rb",
     "test/verified_output/migrations/create_categories.rb",
+    "test/verified_output/migrations/create_chameleons.rb",
     "test/verified_output/migrations/create_reviews.rb",
     "test/verified_output/migrations/create_users.rb",
     "test/verified_output/migrations/created_at.rb",
+    "test/verified_output/migrations/deleted_incompatible_spot.rb",
+    "test/verified_output/migrations/deleted_spots.rb",
     "test/verified_output/migrations/estimated_value_notes.rb",
-    "test/verified_output/migrations/landline.rb"
+    "test/verified_output/migrations/landline.rb",
+    "test/verified_output/migrations/renamed_old_spots.rb"
   ]
 
   if s.respond_to? :specification_version then
@@ -150,6 +164,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<sqlite3>, [">= 0"])
       s.add_development_dependency(%q<simplecov>, [">= 0"])
       s.add_development_dependency(%q<terminal-table>, [">= 0"])
+      s.add_development_dependency(%q<term-ansicolor>, [">= 0"])
     else
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<faker>, [">= 0"])
@@ -160,6 +175,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<sqlite3>, [">= 0"])
       s.add_dependency(%q<simplecov>, [">= 0"])
       s.add_dependency(%q<terminal-table>, [">= 0"])
+      s.add_dependency(%q<term-ansicolor>, [">= 0"])
     end
   else
     s.add_dependency(%q<rails>, [">= 3.0.0"])
@@ -171,6 +187,7 @@ Gem::Specification.new do |s|
     s.add_dependency(%q<sqlite3>, [">= 0"])
     s.add_dependency(%q<simplecov>, [">= 0"])
     s.add_dependency(%q<terminal-table>, [">= 0"])
+    s.add_dependency(%q<term-ansicolor>, [">= 0"])
   end
 end
 
