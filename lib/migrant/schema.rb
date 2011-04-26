@@ -126,11 +126,16 @@ module Migrant
       self.instance_eval(&block)
     end
 
+   # Provides a method for dynamically creating fields (i.e. not part of instance_eval)
+   def property(*arguments)
+     method_missing(*arguments)
+   end
+
     def method_missing(*args, &block)
       field = args.slice!(0)
       data_type = args.slice!(0) unless args.first.nil? || args.first.respond_to?(:keys)
 
-      @binding.add_field(field, data_type, args.extract_options!)
+      @binding.add_field(field.to_sym, data_type, args.extract_options!)
     end
   end
 end
