@@ -5,12 +5,20 @@ module DataType
       {:type => :boolean}
     end  
     
+    def mock
+      self.class.default_mock
+    end
+
     def self.default_mock
       true
     end
   end
   
-  class FalseClass < TrueClass; end;
+  class FalseClass < TrueClass
+    def self.default_mock
+      false
+    end
+  end
   
   # Datetime
   class Date < Base
