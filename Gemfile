@@ -2,6 +2,7 @@ source :gemcutter
 
 gem "rails", ">= 3.0.0"
 gem "faker"
+gem "term-ansicolor"
 
 group :development do
   gem "thoughtbot-shoulda"
