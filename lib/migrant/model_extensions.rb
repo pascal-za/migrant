@@ -34,6 +34,8 @@ module Migrant
     end
 
     def mock(attributes={}, recursive=true)
+      raise NoStructureDefined.new("In order to mock() #{self.to_s}, you need to define a Migrant structure block") unless @schema
+ 
       attribs = {}
       attribs.merge!(self.superclass.mock_attributes(attributes, recursive)) unless self.superclass == ActiveRecord::Base
       new attribs.merge(mock_attributes(attributes, recursive))
@@ -59,5 +61,7 @@ module Migrant
       end
     end
   end
+
+  class NoStructureDefined < Exception; end;
 end
 
