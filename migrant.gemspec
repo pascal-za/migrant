@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{migrant}
-  s.version = "1.2.0"
+  s.version = "1.2.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2011-04-23}
+  s.date = %q{2011-05-04}
   s.description = %q{Easier schema management for Rails that compliments your domain model.}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
@@ -157,6 +157,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<rails>, [">= 3.0.0"])
       s.add_runtime_dependency(%q<faker>, [">= 0"])
+      s.add_runtime_dependency(%q<term-ansicolor>, [">= 0"])
       s.add_development_dependency(%q<thoughtbot-shoulda>, [">= 0"])
       s.add_development_dependency(%q<ansi>, [">= 0"])
       s.add_development_dependency(%q<jeweler>, [">= 0"])
@@ -168,6 +169,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<faker>, [">= 0"])
+      s.add_dependency(%q<term-ansicolor>, [">= 0"])
       s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
       s.add_dependency(%q<ansi>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
@@ -180,6 +182,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<rails>, [">= 3.0.0"])
     s.add_dependency(%q<faker>, [">= 0"])
+    s.add_dependency(%q<term-ansicolor>, [">= 0"])
     s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
     s.add_dependency(%q<ansi>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
