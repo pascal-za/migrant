@@ -108,15 +108,7 @@ Gem::Specification.new do |s|
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<migrant>, [">= 0"])
-      s.add_development_dependency(%q<thoughtbot-shoulda>, [">= 0"])
-      s.add_development_dependency(%q<ansi>, [">= 0"])
-      s.add_development_dependency(%q<jeweler>, [">= 0"])
-      s.add_development_dependency(%q<turn>, [">= 0"])
-      s.add_development_dependency(%q<sqlite3>, [">= 0"])
-      s.add_development_dependency(%q<simplecov>, [">= 0"])
-      s.add_development_dependency(%q<terminal-table>, [">= 0"])
-      s.add_development_dependency(%q<term-ansicolor>, [">= 0"])
+      s.add_runtime_dependency(%q<jeweler>, [">= 0"])
       s.add_runtime_dependency(%q<rails>, [">= 3.0.0"])
       s.add_runtime_dependency(%q<faker>, [">= 0"])
       s.add_runtime_dependency(%q<term-ansicolor>, [">= 0"])
@@ -130,15 +122,7 @@ Gem::Specification.new do |s|
       s.add_development_dependency(%q<term-ansicolor>, [">= 0"])
       s.add_development_dependency(%q<rake>, ["= 0.8.7"])
     else
-      s.add_dependency(%q<migrant>, [">= 0"])
-      s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
-      s.add_dependency(%q<ansi>, [">= 0"])
       s.add_dependency(%q<jeweler>, [">= 0"])
-      s.add_dependency(%q<turn>, [">= 0"])
-      s.add_dependency(%q<sqlite3>, [">= 0"])
-      s.add_dependency(%q<simplecov>, [">= 0"])
-      s.add_dependency(%q<terminal-table>, [">= 0"])
-      s.add_dependency(%q<term-ansicolor>, [">= 0"])
       s.add_dependency(%q<rails>, [">= 3.0.0"])
       s.add_dependency(%q<faker>, [">= 0"])
       s.add_dependency(%q<term-ansicolor>, [">= 0"])
@@ -153,15 +137,7 @@ Gem::Specification.new do |s|
       s.add_dependency(%q<rake>, ["= 0.8.7"])
     end
   else
-    s.add_dependency(%q<migrant>, [">= 0"])
-    s.add_dependency(%q<thoughtbot-shoulda>, [">= 0"])
-    s.add_dependency(%q<ansi>, [">= 0"])
     s.add_dependency(%q<jeweler>, [">= 0"])
-    s.add_dependency(%q<turn>, [">= 0"])
-    s.add_dependency(%q<sqlite3>, [">= 0"])
-    s.add_dependency(%q<simplecov>, [">= 0"])
-    s.add_dependency(%q<terminal-table>, [">= 0"])
-    s.add_dependency(%q<term-ansicolor>, [">= 0"])
     s.add_dependency(%q<rails>, [">= 3.0.0"])
     s.add_dependency(%q<faker>, [">= 0"])
     s.add_dependency(%q<term-ansicolor>, [">= 0"])
