@@ -2,7 +2,7 @@ class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration
   def self.up
     create_table :<%= @table_name %> do |t|
       <% @columns.each do |field, options| %>
-      t.<%= options.delete(:type) %> :<%= field %><%= (options.blank?)? '': ", "+options.inspect[1..-2] %> 
+      t.<%= options.delete(:type) %> :<%= field %><%= (options.blank?)? '': ", "+options.to_a.collect { |o| ":#{o[0]}=>#{o[1]}" }.sort.join(', ') %> 
       <% end %>
     end
     <% @indexes.each do |index| %>

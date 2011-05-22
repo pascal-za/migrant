@@ -32,6 +32,7 @@ begin
     gem.add_development_dependency "simplecov"
     gem.add_development_dependency "terminal-table"
     gem.add_development_dependency "term-ansicolor"
+    gem.add_development_dependency "rake", "0.8.7" # Until API gets sorted
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end

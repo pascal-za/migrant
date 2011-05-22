@@ -11,7 +11,7 @@ module Migrant
       migrator = ActiveRecord::Migrator.new(:up, migrations_path)
 
       unless migrator.pending_migrations.blank?
-        puts "You have some pending database migrations. You can either:\n1. Run them with rake db:migrate\n2. Delete them, in which case this task will probably recreate their actions (DON'T do this if they've been in SCM)."
+        log "You have some pending database migrations. You can either:\n1. Run them with rake db:migrate\n2. Delete them, in which case this task will probably recreate their actions (DON'T do this if they've been in SCM).", :error
         return false
       end
 
@@ -20,11 +20,10 @@ module Migrant
       # This needs to be done because Rails normally lazy-loads these files, resulting a blank descendants list of AR::Base
       Dir["#{Rails.root.to_s}/app/models/**/*.rb"].each { |f| require(f) }
 
-      ActiveRecord::Base.descendants.each do |model|
-        next if model.schema.nil? || !model.schema.requires_migration? # Skips inherited schemas (such as models with STI)
+      ActiveRecord::Base.descendants.select { |model| model.schema && model.schema.requires_migration? }.each do |model|
         model.reset_column_information # db:migrate doesn't do this
         @table_name = model.table_name
-        @changed_columns, @added_columns, @deleted_columns, @renamed_columns, @transferred_columns = [], [], [], [], []    
+        @columns = Hash[[:changed, :added, :deleted, :renamed, :transferred].collect { |a| [a,[]] }]  
 
         if model.table_exists?
           # Structure ActiveRecord::Base's column information so we can compare it directly to the schema
@@ -47,10 +46,10 @@ module Migrant
           # Removed rows
           unless model.schema.partial?
             db_schema.reject { |field_name, options| field_name.to_s == model.primary_key || model.schema.columns.keys.include?(field_name) }.each do |removed_field_name, options|
-              case ask_user("#{model}: '#{removed_field_name}' is no longer in use.", (@added_columns.blank?)? %W{Destroy Ignore} : %W{Destroy Move Ignore})
+              case ask_user("#{model}: '#{removed_field_name}' is no longer in use.", (@columns[:added].blank?)? %W{Destroy Ignore} : %W{Destroy Move Ignore})
                 when 'Destroy' then delete_column(removed_field_name, db_schema[removed_field_name])
                 when 'Move' then
-                  target = ask_user("Move '#{removed_field_name}' to:", @added_columns.collect(&:first))
+                  target = ask_user("Move '#{removed_field_name}' to:", @columns[:added].collect(&:first))
                   target_column = model.schema.columns[target]
                   begin
                     target_column.structure_changes_from(db_schema[removed_field_name])
@@ -63,11 +62,11 @@ module Migrant
               end
             end 
           end
-          destroyed_columns = @deleted_columns.reject { |field, options| @transferred_columns.collect(&:first).include?(field) }
+          destroyed_columns = @columns[:deleted].reject { |field, options| @columns[:transferred].collect(&:first).include?(field) }
           unless destroyed_columns.blank?
             if ask_user("#{model}: '#{destroyed_columns.collect(&:first).join(', ')}' and associated data will be DESTROYED in all environments. Continue?", %W{Yes No}, true) == 'No'
               log "Okay, not removing anything for now."
-              @deleted_columns = []
+              @columns[:deleted] = []
             end
           end
 
@@ -76,14 +75,14 @@ module Migrant
             current_indexes = ActiveRecord::Base.connection.indexes(model.table_name).collect { |index| (index.columns.length == 1)? index.columns.first.to_sym : index.columns.collect(&:to_sym) }
             @indexes = model.schema.indexes.uniq.reject { |index| current_indexes.include?(index) }.collect { |field_name| [field_name, {}]  }
             # Don't spam the user with indexes that columns are being created with
-            @new_indexes = @indexes.reject { |index, options| @changed_columns.detect { |c| c.first == index } || @added_columns.detect { |c| c.first == index } }
+            @new_indexes = @indexes.reject { |index, options| @columns[:changed].detect { |c| c.first == index } || @columns[:added].detect { |c| c.first == index } }
           end
 
-          next if @changed_columns.empty? && @added_columns.empty? && @renamed_columns.empty? && @transferred_columns.empty? && @deleted_columns.empty? && @indexes.empty? # Nothing to do for this table
+          next if @columns[:changed].empty? && @columns[:added].empty? && @columns[:renamed].empty? && @columns[:transferred].empty? && @columns[:deleted].empty? && @indexes.empty? # Nothing to do for this table
 
           # Example: changed_table_added_something_and_modified_something
-          @activity = 'changed_'+model.table_name+[['added', @added_columns], ['modified', @changed_columns], ['deleted', destroyed_columns], 
-          ['moved', @transferred_columns], ['renamed', @renamed_columns], ['indexed', @new_indexes]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:first).join('_') }.join('_and')
+          @activity = 'changed_'+model.table_name+[['added', @columns[:added]], ['modified', @columns[:changed]], ['deleted', destroyed_columns], 
+          ['moved', @columns[:transferred]], ['renamed', @columns[:renamed]], ['indexed', @new_indexes]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:first).join('_') }.join('_and')
           @activity = @activity.split('_')[0..2].join('_') if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
           
           render('change_migration')
@@ -109,24 +108,24 @@ module Migrant
 
     private
     def add_column(name, options)
-      @added_columns << [name, options]
+      @columns[:added] << [name, options]
     end
     
     def change_column(name, new_schema, old_schema)
-      @changed_columns << [name, new_schema, old_schema]
+      @columns[:changed] << [name, new_schema, old_schema]
     end
     
     def delete_column(name, current_structure)
-      @deleted_columns << [name, current_structure]
+      @columns[:deleted] << [name, current_structure]
     end
     
     def move_column(old_name, new_name, old_schema, new_schema)
       if new_schema == old_schema
-        @renamed_columns << [old_name, new_name]
-        @added_columns.reject! { |a| a.first == new_name } # Don't add the column too
+        @columns[:renamed] << [old_name, new_name]
+        @columns[:added].reject! { |a| a.first == new_name } # Don't add the column too
       else
         @possible_irreversible_migrations = true
-        @transferred_columns << [old_name, new_name] # Still need to add the column, just transfer the data afterwards
+        @columns[:transferred] << [old_name, new_name] # Still need to add the column, just transfer the data afterwards
         delete_column(old_name, old_schema)
       end
     end
