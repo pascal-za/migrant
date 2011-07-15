@@ -8,40 +8,6 @@ rescue Bundler::BundlerError => e
   exit e.status_code
 end
 require 'rake'
-
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "migrant"
-    gem.summary = %Q{All the fun of ActiveRecord, without writing your migrations, and a dash of mocking.}
-    gem.description = %Q{Easier schema management for Rails that compliments your domain model.}
-    gem.email = "101pascal@gmail.com"
-    gem.homepage = "http://github.com/pascalh1011/migrant"
-    gem.authors = ["Pascal Houliston"]
-    gem.version = File.read('VERSION')
-
-    gem.add_runtime_dependency "rails", ">= 3.0.0"
-    gem.add_runtime_dependency "faker"
-    gem.add_runtime_dependency "term-ansicolor"
-    
-    gem.add_development_dependency "thoughtbot-shoulda"
-    gem.add_development_dependency "ansi"
-    gem.add_development_dependency "jeweler"
-    gem.add_development_dependency "turn"
-    gem.add_development_dependency "sqlite3"
-    gem.add_development_dependency "simplecov"
-    gem.add_development_dependency "terminal-table"
-    gem.add_development_dependency "term-ansicolor"
-    gem.add_development_dependency "rake", "0.8.7" # Until API gets sorted
-
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-  Jeweler::GemcutterTasks.new
-
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
-end
-
 require 'rake/testtask'
 Rake::TestTask.new(:test) do |test|
   test.libs << 'lib' << 'test'
