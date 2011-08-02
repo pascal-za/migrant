@@ -1,7 +1,7 @@
 module DataType
   # Boolean
   class TrueClass < Base
-    def column
+    def column_defaults
       {:type => :boolean}
     end  
     
@@ -22,7 +22,7 @@ module DataType
   
   # Datetime
   class Date < Base
-    def column
+    def column_defaults
       {:type => :datetime}
     end
     
@@ -35,7 +35,7 @@ module DataType
 
   # Integers
   class Fixnum < Base
-    def column
+    def column_defaults
       {:type => :integer}.tap do |options|
         options.merge!(:limit => @value.size) if @value > 2147483647 # 32-bit limit. Not checking size here because a 64-bit OS always has at least 8 byte size
       end
@@ -47,13 +47,13 @@ module DataType
   end  
   
   class Bignum < Fixnum
-    def column
+    def column_defaults
       {:type => :integer, :limit => ((@value.size > 8)? @value.size : 8) }
     end
   end
   
   class Float < Base
-    def column
+    def column_defaults
       {:type => :float}
     end
     
@@ -64,7 +64,7 @@ module DataType
   
   # Range (0..10)
   class Range < Base
-    def column
+    def column_defaults
       definition = {:type => :integer}
       definition[:limit] = @value.max.to_s.length if @value.respond_to?(:max)
       definition
@@ -78,22 +78,22 @@ module DataType
       @value ||= ''
     end
   
-    def column
+    def column_defaults
       if @value.match(/[\d,]+\.\d{2}$/)
-        return Currency.new(@options).column
+        return Currency.new(@options).column_defaults
       else
         return @value.match(/[\r\n\t]/)? { :type => :text }.merge(@options) : super
       end
     end
     
     def mock
-      @value || ((self.column[:type] == :text)? self.class.long_text_mock : self.class.default_mock )
+      @value || ((self.column_defaults[:type] == :text)? self.class.long_text_mock : self.class.default_mock )
     end
   end
   
   # Symbol (defaults, specified by user)
   class Symbol < Base
-    def column
+    def column_defaults
       # Just construct whatever the user wants
       {:type => @value || :string }.merge(@options)
     end  

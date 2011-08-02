@@ -46,6 +46,10 @@ class TestDataSchema < Test::Unit::TestCase
       assert_schema(Business, :address, :type => :text)      
     end
     
+    should "pass on any options provided in a structure block" do
+      assert_schema(User, :average_rating, :type => :float, :default => 0.0)
+    end
+    
     should "generate a boolean column when a true or false is given" do
       assert_schema(Business, :verified, :type => :boolean)      
     end

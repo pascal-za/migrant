@@ -18,8 +18,12 @@ module DataType
     end
 
     # Default is 'ye good ol varchar(255)
+    def column_defaults
+      { :type => :string }
+    end
+    
     def column
-      {:type => :string}.merge(@options)
+      column_defaults.merge(@options)
     end
             
     def ==(compared_column)
@@ -48,13 +52,13 @@ module DataType
     # Provide the details of a previously column, or simply nil to create a new column
     def structure_changes_from(current_structure = nil)
       new_structure = column
-
+      
+     
       if current_structure
         # General RDBMS data loss scenarios
         raise DataType::DangerousMigration if (new_structure[:type] != :text && [:string, :text].include?(current_structure[:type]) && new_structure[:type] != current_structure[:type])
 
         if new_structure[:limit] && current_structure[:limit].to_i != new_structure[:limit].to_i ||
-           new_structure[:default] && current_structure[:default].to_s != new_structure[:default].to_s ||
            new_structure[:type] != current_structure[:type]
            column
         else

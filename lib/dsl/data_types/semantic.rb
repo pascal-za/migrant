@@ -1,6 +1,6 @@
 module DataType
   class Currency < Base
-    def column
+    def column_defaults
       {:type => :decimal, :precision => 10, :scale => 2}
     end
    
