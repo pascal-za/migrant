@@ -52,7 +52,6 @@ module DataType
     # Provide the details of a previously column, or simply nil to create a new column
     def structure_changes_from(current_structure = nil)
       new_structure = column
-      
      
       if current_structure
         # General RDBMS data loss scenarios
