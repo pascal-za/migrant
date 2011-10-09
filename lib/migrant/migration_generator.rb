@@ -89,7 +89,7 @@ module Migrant
         else
           @activity = "create_#{model.table_name}"
           @columns = model.schema.column_migrations
-          @indexes = model.schema.indexes
+          @indexes = model.schema.indexes.uniq
 
           render("create_migration")
         end
