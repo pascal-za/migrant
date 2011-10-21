@@ -134,12 +134,18 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert(mock.test_mockup_of_datetime.is_a?(Time))    
       assert(DataType::Base.default_mock.is_a?(String))
     end
+    
+    should "not rescursively generate mocks for an inherited model when prohibited by the user" do
+      category_mock = BusinessCategory.mock!({}, false)
+      assert_not_nil(category_mock)
+    end
         
     should "generate example mocks for an inherited model when STI is in effect" do
       assert_equal(5.00, Customer.mock.average_rating)
       assert_equal("somebody@somewhere.com", Customer.mock.email)
       assert(Customer.mock.is_a?(Customer))
     end
+    
     
     should "remove extraneous text from a filename too large for the operating system" do
       BusinessCategory.structure do

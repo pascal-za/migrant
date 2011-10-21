@@ -55,8 +55,8 @@ module Migrant
       Hash[*attribs].merge(attributes)
     end
     
-    def mock!(attributes={})
-      mock(attributes).tap do |mock|
+    def mock!(attributes={}, recursive=true)
+      mock(attributes, recursive).tap do |mock|
         mock.save!
       end
     end
