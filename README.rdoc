@@ -41,6 +41,7 @@ correct database schema for you. Note that you don't need to specify foreign key
 they are automatically inferred from your relations. Here is a further example:
 
   class User < ActiveRecord::Base
+    # Define your associations BEFORE your structure block!
     has_many :businesses
 
     structure do
@@ -53,7 +54,7 @@ they are automatically inferred from your relations. Here is a further example:
       secret_code 5521,    :validates => [:uniqueness, :numericality]
     end
   end
-  
+
 Now, to get your database up to date simply run:
 
   > rake db:upgrade
