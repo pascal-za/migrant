@@ -50,7 +50,7 @@ they are automatically inferred from your relations. Here is a further example:
       timestamps                                    # Gets you a created_at, and updated_at
 
       # Use an array to specifiy multiple validations
-      secret_code 5521, :validates => [:uniqueness, :numericality]
+      secret_code 5521,    :validates => [:uniqueness, :numericality]
     end
   end
   
@@ -104,7 +104,6 @@ Simply run rake db:upgrade or rails generate migrations to get the required migr
 
 These actions won't be performed (because we don't want to hurt your data):
 
-* Remove tables/columns
 * Changing column types where data loss may occur (e.g. varchar -> int)
 
 == Getting a mock of your model
@@ -128,6 +127,10 @@ Add the following to support/env/pickle.rb:
   end
 
 All pickle steps will then return a mocked model by default, overriden with any values you provide.
+
+== Help
+
+Be sure to check out the Github Wiki, or give me a shout on Twitter: @101pascal
 
 == Maintability / Usability concerns
 * You don't have to define a structure on every model, Migrant ignores models with no definitions
