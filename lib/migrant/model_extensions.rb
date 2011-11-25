@@ -8,17 +8,20 @@ module Migrant
     end
     
     def create_migrant_schema
-       @schema ||= Schema.new if self.superclass == ActiveRecord::Base
+      if self.superclass == ActiveRecord::Base
+       @schema ||= Schema.new
+      else
+        @schema ||= InheritedSchema.new(self.superclass.schema)
+      end
     end
     
     def structure(type=nil, &block)
       # Using instance_*evil* to get the neater DSL on the models.
       # So, my_field in the structure block actually calls Migrant::Schema.my_field
 
+      create_migrant_schema
       if self.superclass == ActiveRecord::Base
-        create_migrant_schema
         @schema.define_structure(type, &block)
-        
         @schema.validations.each do |field, validation_options|
           validations = (validation_options.class == Array)? validation_options : [validation_options]
           validations.each do |validation|
@@ -28,7 +31,6 @@ module Migrant
         end
       else
         self.superclass.structure(&block) # For STI, cascade all fields onto the parent model
-        @schema = InheritedSchema.new(self.superclass.schema)
       end
     end
 

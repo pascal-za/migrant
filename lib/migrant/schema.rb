@@ -100,7 +100,7 @@ module Migrant
 
     def initialize(parent_schema)
       @parent_schema = parent_schema
-      @columns = Array.new
+      @columns = Hash.new
       @indexes = Array.new
     end
 
