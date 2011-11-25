@@ -29,26 +29,25 @@ module Migrant
       @proxy.translate_fancy_dsl(&block) if block_given?
     end
 
-    def add_associations(associations)
-      associations.each do |association|
-        # Rails 3.1 changes primary_key_name to foreign_key (correct behaviour), so this is essentially backwards compatibility for Rails 3.0
-        field = (association.respond_to?(:foreign_key))? association.foreign_key.to_sym : association.primary_key_name.to_sym
-        case association.macro
-          when :belongs_to
-            if association.options[:polymorphic]
-              @columns[(association.name.to_s+'_type').to_sym] = DataType::Polymorphic.new(:field => field)
-              @indexes << [(association.name.to_s+'_type').to_sym, field]
-            end
-            @columns[field] = DataType::ForeignKey.new(:field => field)
-            @indexes << field
-        end
+    def add_association(association)
+      # Rails 3.1 changes primary_key_name to foreign_key (correct behaviour), so this is essentially backwards compatibility for Rails 3.0
+      field = (association.respond_to?(:foreign_key))? association.foreign_key.to_sym : association.primary_key_name.to_sym
+      
+      case association.macro
+        when :belongs_to
+          if association.options[:polymorphic]
+            @columns[(association.name.to_s+'_type').to_sym] = DataType::Polymorphic.new(:field => field)
+            @indexes << [(association.name.to_s+'_type').to_sym, field]
+          end
+          @columns[field] = DataType::ForeignKey.new(:field => field)
+          @indexes << field
       end
     end
 
     def requires_migration?
       true
     end
-
+  
     # If the user defines structure(:partial), irreversible changes are ignored (removing a column, for example)    
     def partial?
       @type == :partial

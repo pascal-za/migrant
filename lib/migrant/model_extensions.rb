@@ -1,13 +1,22 @@
 module Migrant
   module ModelExtensions
     attr_accessor :schema
+    
+    def belongs_to(*args)
+      create_migrant_schema
+      @schema.add_association(super)
+    end
+    
+    def create_migrant_schema
+       @schema ||= Schema.new if self.superclass == ActiveRecord::Base
+    end
+    
     def structure(type=nil, &block)
       # Using instance_*evil* to get the neater DSL on the models.
       # So, my_field in the structure block actually calls Migrant::Schema.my_field
 
       if self.superclass == ActiveRecord::Base
-        @schema ||= Schema.new
-        @schema.add_associations(self.reflect_on_all_associations)
+        create_migrant_schema
         @schema.define_structure(type, &block)
         
         @schema.validations.each do |field, validation_options|
