@@ -18,7 +18,13 @@ module Migrant
       # Get all tables and compare to the desired schema
       # The next line is an evil hack to recursively load all model files in app/models
       # This needs to be done because Rails normally lazy-loads these files, resulting a blank descendants list of AR::Base
-      Dir["#{Rails.root.to_s}/app/models/**/*.rb"].each { |f| require(f) }
+      model_root = "#{Rails.root.to_s}/app/models/"
+      
+      Dir["#{model_root}**/*.rb"].each do |file|
+        if (model_name = file.sub(model_root, '').match(/(.*)?\.rb$/))
+          model_name[1].camelize.constantize
+        end
+      end
 
       ActiveRecord::Base.descendants.select { |model| model.schema && model.schema.requires_migration? }.each do |model|
         model.reset_column_information # db:migrate doesn't do this
