@@ -3,10 +3,9 @@ module Migrant
     attr_accessor :schema
     
     def belongs_to(*args)
-      super.tap do |association|
-        create_migrant_schema
-        @schema.add_association(association)
-      end
+      super
+      create_migrant_schema
+      @schema.add_association(self.reflect_on_association(args.first))
     end
         
     def create_migrant_schema

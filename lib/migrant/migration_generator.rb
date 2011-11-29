@@ -152,11 +152,11 @@ module Migrant
       end
       
       begin
-        message = "> #{message} [#{mappings.collect { |shortcut, choice| choice.to_s.sub(shortcut, '('+shortcut+')') }.join(' / ')}]: "
+        prompt = "> #{message} [#{mappings.collect { |shortcut, choice| choice.to_s.sub(shortcut, '('+shortcut+')') }.join(' / ')}]: "
         if warning
-          STDOUT.print red, bold, message, reset
+          STDOUT.print red, bold, prompt, reset
         else
-          STDOUT.print bold, message, reset
+          STDOUT.print bold, prompt, reset
         end
         STDOUT.flush
         input = STDIN.gets.downcase
