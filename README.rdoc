@@ -78,6 +78,30 @@ By default, your database structure will be cloned to your test environment. If 
 automatically, simply specify an environment variable directly:
 
   > rake db:upgrade RAILS_ENV=development
+
+== Serialization
+
+Keeping track of your serialized attributes can be done in the Migrant DSL (v1.3+), here's some examples:
+
+  class Business < ActiveRecord::Base
+    structure do
+      # Specify serialization automatically (e.g. using Hash, Array, OpenStruct)
+      awards     ["Best Chicken 2007", "Business of the year 2008"]
+    
+      # Serialization by example types
+      # This would load/store an OpenStruct but store as text in your database
+      staff      :serialized, :example => OpenStruct.new("Manager" => "Joe")
+ 
+      # Default serialization storage (hash)
+      locations  :serialized
+    end
+  end
+
+These will call ActiveRecord::Base.serialize for you so don't do it again yourself! The mock generated would appear as:
+
+  irb(main):002:0> my_business = Business.mock
+  => #<Business id: nil, awards: ["Best Chicken 2007", "Business of the year 2008"], staff: #<OpenStruct manager="Joe">, 
+       locations: {}>
   
 == Want more examples?
 

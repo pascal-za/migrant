@@ -123,6 +123,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
         test_mockup_of_currency DataType::Currency
         test_mockup_serialized :serialized
         test_mockup_hash OpenStruct.new({'a' => 'b'})
+        test_mockup_serialized_example :serialized, :example => OpenStruct.new({'c' => 'd'})
       end
       
 
@@ -144,6 +145,8 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert(mock.test_mockup_serialized.is_a?(Hash))
       assert(mock.test_mockup_hash.is_a?(OpenStruct))
       assert_equal(mock.test_mockup_hash.a, 'b')
+      assert(mock.test_mockup_serialized_example.is_a?(OpenStruct))  
+      assert_equal(mock.test_mockup_serialized_example.c, 'd')
     end
     
     should "not rescursively generate mocks for an inherited model when prohibited by the user" do

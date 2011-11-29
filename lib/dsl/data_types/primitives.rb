@@ -105,7 +105,7 @@ module DataType
         when :integer then Fixnum.default_mock
         when :decimal, :float then Float.default_mock
         when :datetime, :date then Date.default_mock
-        when :serialized, :serialize then Hash.default_mock
+        when :serialized, :serialize then (@example)? @example : Hash.default_mock
       end
     end
     
@@ -114,7 +114,9 @@ module DataType
     end
     
     def serialized_class_name
-      ::Hash
+      klass_name = (@example)? @example.class.to_s : "Hash"      
+      
+      klass_name.constantize
     end
   end
   
