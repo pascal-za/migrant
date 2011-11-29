@@ -95,7 +95,7 @@ module DataType
   class Symbol < Base
     def column_defaults
       # Just construct whatever the user wants
-      {:type => @value || :string }.merge(@options)
+      {:type => ((serialized?)? :text : @value) || :string }.merge(@options)
     end  
     
     def mock
@@ -105,10 +105,50 @@ module DataType
         when :integer then Fixnum.default_mock
         when :decimal, :float then Float.default_mock
         when :datetime, :date then Date.default_mock
+        when :serialized, :serialize then Hash.default_mock
       end
+    end
+    
+    def serialized?
+      %W{serialized serialize}.include?(@value.to_s)
+    end
+    
+    def serialized_class_name
+      ::Hash
     end
   end
   
+  # Objects
+  class Object < Base
+    def column_defaults
+      {:type => :text }
+    end
+    
+    def self.default_mock     
+      self.native_class.new
+    end
+    
+    def mock
+      @value || self.default_mock
+    end
+    
+    def serialized?
+      true
+    end
+    
+    def serialized_class_name
+      self.class.native_class
+    end
+    
+    def self.native_class
+      self.to_s.split('::').last.constantize
+    end
+  end
+  
+  # Store these objects serialized by default
+  class Array < Object; end;
+  class Hash < Object; end;
+  class OpenStruct < Object; end;
 end
   
 

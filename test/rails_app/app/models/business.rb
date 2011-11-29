@@ -18,5 +18,7 @@ class Business < ActiveRecord::Base
     next_sale        (Time.now + 10.days)
     verified         false
     location         :type => :string, :limit => 127
+    awards           ["Best business 2007", "Tastiest Chicken 2008"]
+    managers         :serialized
   end
 end

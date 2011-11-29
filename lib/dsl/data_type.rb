@@ -13,12 +13,12 @@ module DataType
       @value = options.delete(:value)
       @example = options.delete(:example)
       @field = options.delete(:field)
-      @aliases = options.delete(:was) || Array.new
+      @aliases = options.delete(:was) || ::Array.new
       options[:type] = options.delete(:as) if options[:as] # Nice little DSL alias for 'type'      
     end
 
     # Default is 'ye good ol varchar(255)
-    def column_defaults
+    def column_defaults 
       { :type => :string }
     end
     
@@ -31,8 +31,12 @@ module DataType
       column[:type] == compared_column[:type]
     end
 
-    def mock
+    def mock      
       @value || self.class.default_mock
+    end
+    
+    def serialized?
+      false
     end
 
     # Default mock should be overridden in derived classes

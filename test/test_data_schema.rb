@@ -86,8 +86,17 @@ class TestDataSchema < Test::Unit::TestCase
     should "generate indexes on any column when explicitly asked to" do
       assert_contains(Category.schema.indexes, :title, 'Missing index on :index => true column')
     end 
-
-
+    
+    should "generate a text column for serialized fields" do
+      assert_schema(Business, :awards, :type => :text)
+      assert_schema(Business, :managers, :type => :text)
+      
+      assert_equal(Array, Business.schema.columns[:awards].mock.class)
+      assert_equal(Hash, Business.schema.columns[:managers].mock.class)
+    
+      assert(Business.serialized_attributes.keys.include?("awards"), "Should call ActiveRecord::Base.serialize")
+      assert(Business.serialized_attributes.keys.include?("managers"), "Should call ActiveRecord::Base.serialize")
+    end
   end
 
 end

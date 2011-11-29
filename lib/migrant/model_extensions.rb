@@ -3,10 +3,12 @@ module Migrant
     attr_accessor :schema
     
     def belongs_to(*args)
-      create_migrant_schema
-      @schema.add_association(super)
+      super.tap do |association|
+        create_migrant_schema
+        @schema.add_association(association)
+      end
     end
-    
+        
     def create_migrant_schema
       if self.superclass == ActiveRecord::Base
        @schema ||= Schema.new
@@ -27,6 +29,12 @@ module Migrant
           validations.each do |validation|
             validation = (validation.class == Hash)? validation : { validation => true }
             self.validates(field, validation)
+          end
+        end
+        # Set up serialized columns as required
+        @schema.columns.select do |name, column|
+          if column.serialized? && !serialized_attributes.keys.include?(name.to_s)
+            serialize(name, column.serialized_class_name)
           end
         end
       else
@@ -53,7 +61,7 @@ module Migrant
     end
     
     def mock_attributes(attributes={}, recursive=true)
-      attribs = @schema.columns.collect { |name, data_type| [name, data_type.mock] }.flatten
+      attribs = @schema.columns.collect { |name, data_type| [name, data_type.mock] }.flatten(1)
 
       # Only recurse to one level, otherwise things get way too complicated
       if recursive

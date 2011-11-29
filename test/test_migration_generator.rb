@@ -121,14 +121,18 @@ class TestMigrationGenerator < Test::Unit::TestCase
         test_mockup_of_float   :float
         test_mockup_of_datetime :datetime
         test_mockup_of_currency DataType::Currency
+        test_mockup_serialized :serialized
+        test_mockup_hash OpenStruct.new({'a' => 'b'})
       end
+      
 
       BusinessCategory.belongs_to(:notaclass, :polymorphic => true)
       generate_migrations
       rake_migrate
       BusinessCategory.reset_column_information
-      BusinessCategory.mock!
+      m = BusinessCategory.mock!
       mock = BusinessCategory.last
+      
       assert_not_nil(mock)
       assert(mock.test_mockup_of_text.is_a?(String))
       assert(mock.test_mockup_of_string.is_a?(String))
@@ -137,6 +141,9 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert(mock.test_mockup_of_currency.is_a?(BigDecimal))    
       assert(mock.test_mockup_of_datetime.is_a?(Time))    
       assert(DataType::Base.default_mock.is_a?(String))
+      assert(mock.test_mockup_serialized.is_a?(Hash))
+      assert(mock.test_mockup_hash.is_a?(OpenStruct))
+      assert_equal(mock.test_mockup_hash.a, 'b')
     end
     
     should "not rescursively generate mocks for an inherited model when prohibited by the user" do
