@@ -2,11 +2,11 @@
 
 == Summary
 
-Migrant gives you a clean DSL to describe your model schema (somewhat similar to DataMapper)
-that generates your migrations for you and enables you to spend more time on describing your domain
+Migrant gives you a clean DSL to describe your model schema (somewhat similar to DataMapper).
+It generates your migrations for you so you can spend more time on describing your domain
 model cleanly and less time managing your database layer.
 
-You'll also get a handy .mock method to instantiate a filled in model for testing or debugging purposes.
+You'll also get a handy .mock method to instantiate a filled-in model for testing or debugging.
 
 == Getting Started
 
@@ -14,9 +14,9 @@ In your Gemfile:
 
   gem "migrant"
   
-Rails: 3.0+ (Sorry folks, no plans for Rails 2 support)
-Ruby: Tested with 1.8.7 MRI, 1.9.2 MRI, and Rubinius 1.2.1 
-Adapters: Tested with SQLite3, MySQL, MySQL2, Pg. Should work with any AR adapter in theory.
+* Rails: 3.0+ (Sorry folks, no plans for Rails 2 support)
+* Ruby: Tested with 1.8.7 MRI, 1.9.2 MRI, and Rubinius 1.2.1 
+* Adapters: Tested with SQLite3, MySQL, MySQL2, Pg. Should work with any AR adapter in theory.
 
 == Jumping right in
 
@@ -105,7 +105,7 @@ These will call ActiveRecord::Base.serialize for you so don't do it again yourse
   
 == Want more examples?
 
-Check out the test models in test/rails_app/app/models/*
+Check out the test models in +test/rails_app/app/models/*+
 
 == Model Generator
 
@@ -194,7 +194,7 @@ WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Please be sure to install all the development dependencies via Bundler, then to run tests do:
 
-> rake test
+  > rake test
 
-Simplecov reports will be generated for each run, if it's not at 100% line coverage, something's wrong!
+Simplecov reports will be generated for each run. If it's not at 100% line coverage, something's wrong!
 
