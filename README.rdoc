@@ -3,7 +3,7 @@
 == Summary
 
 Migrant gives you a clean DSL to describe your model schema (somewhat similar to DataMapper).
-It generates your migrations for you so you can spend more time on describing your domain
+It generates your migrations for you so you can spend more time describing your domain
 model cleanly and less time managing your database layer.
 
 You'll also get a handy .mock method to instantiate a filled-in model for testing or debugging.
