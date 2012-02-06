@@ -28,6 +28,7 @@ module Migrant
 
       ActiveRecord::Base.descendants.select { |model| model.schema && model.schema.requires_migration? }.each do |model|
         model.reset_column_information # db:migrate doesn't do this
+  sleep 1
         @table_name = model.table_name
         @columns = Hash[[:changed, :added, :deleted, :renamed, :transferred].collect { |a| [a,[]] }]  
 
