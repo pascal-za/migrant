@@ -61,7 +61,7 @@ Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db', 'migrate', '*')).e
  File.delete(file)
 end
 
-require File.join(File.dirname(__FILE__), 'rails_app', 'config', 'environment')
+#require File.join(File.dirname(__FILE__), 'rails_app', 'config', 'environment')
 
 class Test::Unit::TestCase
 end
