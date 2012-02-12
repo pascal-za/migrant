@@ -26,6 +26,9 @@ module Migrant
         end
       end
 
+      # Rails 3.2+ caches table (non) existence so this needs to be cleared before we start
+      ActiveRecord::Base.connection.schema_cache.clear! if ActiveRecord::Base.connection.respond_to?(:schema_cache)
+
       ActiveRecord::Base.descendants.select { |model| model.schema && model.schema.requires_migration? }.each do |model|
         model.reset_column_information # db:migrate doesn't do this
         @table_name = model.table_name
@@ -35,17 +38,15 @@ module Migrant
           # Structure ActiveRecord::Base's column information so we can compare it directly to the schema
           db_schema = Hash[*model.columns.collect {|c| [c.name.to_sym, Hash[*[:type, :limit].map { |type| [type, c.send(type)] }.flatten]  ] }.flatten]
           model.schema.columns.to_a.sort { |a,b| a.to_s <=> b.to_s }.each do |field_name, data_type|
-            begin
-              if (options = data_type.structure_changes_from(db_schema[field_name]))
-                if db_schema[field_name]
-                  change_column(field_name, options, db_schema[field_name])
-                else
-                  add_column(field_name, options)
-                end
+            if data_type.dangerous_migration_from?(db_schema[field_name]) && 
+               ask_user("#{model}: '#{field_name}': Converting from ActiveRecord type #{db_schema[field_name][:type]} to #{data_type.column[:type]} could cause data loss. Continue?", %W{Yes No}, true) == "No"
+              log "Aborting dangerous action on #{field_name}."
+            elsif (options = data_type.structure_changes_from(db_schema[field_name]))
+              if db_schema[field_name]
+                change_column(field_name, options, db_schema[field_name])
+              else
+                add_column(field_name, options)
               end
-            rescue DataType::DangerousMigration
-              log "Cannot generate migration automatically for #{model.table_name}, this would involve possible data loss on column: #{field_name}\nOld structure: #{db_schema[field_name].inspect}. New structure: #{data_type.column.inspect}\nPlease create and run this migration yourself (with the appropriate data integrity checks)", :error
-              return false
             end
           end
           
@@ -57,10 +58,11 @@ module Migrant
                 when 'Move' then
                   target = ask_user("Move '#{removed_field_name}' to:", @columns[:added].collect(&:first))
                   target_column = model.schema.columns[target]
-                  begin
+
+                  unless target_column.dangerous_migration_from?(db_schema[removed_field_name])
                     target_column.structure_changes_from(db_schema[removed_field_name])
                     move_column(removed_field_name, target, db_schema[removed_field_name], target_column)
-                  rescue DataType::DangerousMigration
+                  else
                     case ask_user("Unable to safely move '#{removed_field_name}' to '#{target}'. Keep the original column for now?", %W{Yes No}, true)
                       when 'No' then delete_column(removed_field_name, db_schema[removed_field_name])
                     end
