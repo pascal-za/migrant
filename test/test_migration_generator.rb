@@ -172,6 +172,21 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert(Customer.mock.is_a?(Customer))
     end
     
+    
+    should "remove extraneous text from a filename too large for the operating system" do
+      BusinessCategory.structure do
+        a_very_very_long_field_indeed_far_too_long_for_any_good_use_really true
+        a_very_very_long_field_indeed_far_too_long_for_any_good_use_really_2 true
+        a_very_very_long_field_indeed_far_too_long_for_any_good_use_really_3 true
+      end
+      
+      BusinessCategory.belongs_to(:verylongclassthatissuretogenerateaverylargeoutputfilename)
+      generate_migrations
+      delete_last_migration # Can't actually test migration because the index name is too long!
+#      BusinessCategory.schema.undo_structure_column(:verylongclassthatissuretogenerateaverylargeoutputfilename_id)
+      BusinessCategory.reset_structure!
+    end
+
     should "remove columns when requested and confirmed by the user" do
       Chameleon.structure 
       Chameleon.reset_structure!

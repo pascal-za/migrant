@@ -1,4 +1,5 @@
 = Migrant
+"!https://secure.travis-ci.org/pascalh1011/migrant.png!":http://travis-ci.org/pascalh1011/migrant
 
 == Summary
 
