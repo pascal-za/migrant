@@ -1,8 +1,6 @@
 require 'faker'
 
 module DataType
-  class DangerousMigration < Exception; end;
-
   class Base
     attr_accessor :aliases
 
@@ -59,8 +57,6 @@ module DataType
      
       if current_structure
         # General RDBMS data loss scenarios
-        raise DataType::DangerousMigration if (new_structure[:type] != :text && [:string, :text].include?(current_structure[:type]) && new_structure[:type] != current_structure[:type])
-
         if new_structure[:limit] && current_structure[:limit].to_i != new_structure[:limit].to_i ||
            new_structure[:type] != current_structure[:type]
            column
@@ -72,10 +68,12 @@ module DataType
       end
     end
 
+    def dangerous_migration_from?(current_structure = nil)
+      current_structure && (column[:type] != :text && [:string, :text].include?(current_structure[:type]) && column[:type] != current_structure[:type])
+    end
+
     def self.migrant_data_type?; true; end
   end
-  
- 
 end
 
 require 'dsl/data_types/primitives'

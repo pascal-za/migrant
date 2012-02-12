@@ -28,7 +28,16 @@ class TestMigrationGenerator < Test::Unit::TestCase
           return
         end
     end
-    flunk "No migration could be found"
+    flunk "No migration could be found like '#{template}'"
+  end
+
+  def any_template_match?(template)
+    Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).each do |migration_file|
+      if migration_file.include?(template)
+        return true
+      end
+    end
+    false
   end
   
   def delete_last_migration
@@ -81,11 +90,14 @@ class TestMigrationGenerator < Test::Unit::TestCase
       run_against_template('created_at')
     end
 
-    should "not change existing columns where data loss may occur" do
+    should "prompt the user to confirm changing existing columns where data loss may occur" do
+      STDIN._mock_responses('N')
+
       Business.structure do
         landline :integer # Was previously a string, which obviously may incur data loss
       end
-      assert_equal(false, Migrant::MigrationGenerator.new.run, "MigrationGenerator ran a dangerous migration!")
+      Migrant::MigrationGenerator.new.run
+      assert(any_template_match?('modified_landline'), 'Ignored a request not to generate a dangerous migration!')
       Business.structure do
         landline :text # Undo our bad for the next tests
       end
