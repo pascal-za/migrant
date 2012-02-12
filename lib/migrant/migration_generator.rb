@@ -91,7 +91,7 @@ module Migrant
           # Example: changed_table_added_something_and_modified_something
           @activity = 'changed_'+model.table_name+[['added', @columns[:added]], ['modified', @columns[:changed]], ['deleted', destroyed_columns], 
           ['moved', @columns[:transferred]], ['renamed', @columns[:renamed]], ['indexed', @new_indexes]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:first).join('_') }.join('_and')
-          @activity = @activity.split('_')[0..2].join('_') if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
+          @activity = @activity.split('_')[0..2].join('_')+'_with_multiple_changes' if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
           
           render('change_migration')
         else
