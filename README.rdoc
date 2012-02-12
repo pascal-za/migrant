@@ -125,12 +125,6 @@ Simply run rake db:upgrade or rails generate migrations to get the required migr
 * Changing column types
 * Rollbacks for all the above
 
-== What won't
-
-These actions won't be performed (because we don't want to hurt your data):
-
-* Changing column types where data loss may occur (e.g. varchar -> int)
-
 == Getting a mock of your model
 
   > rails console
