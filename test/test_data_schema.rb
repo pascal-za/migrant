@@ -99,4 +99,8 @@ class TestDataSchema < Test::Unit::TestCase
     end
   end
 
+  should "still indicate a structure is not defined if a belongs_to association is added" do
+    assert_equal(false, NonMigrantModel.structure_defined?)
+    assert_equal(true, Business.structure_defined?)
+  end
 end

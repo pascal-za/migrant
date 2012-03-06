@@ -21,6 +21,8 @@ module Migrant
       # So, my_field in the structure block actually calls Migrant::Schema.my_field
 
       create_migrant_schema
+      @structure_defined = true
+
       if self.superclass == ActiveRecord::Base
         @schema.define_structure(type, &block)
         @schema.validations.each do |field, validation_options|
@@ -39,6 +41,10 @@ module Migrant
       else
         self.superclass.structure(&block) # For STI, cascade all fields onto the parent model
       end
+    end
+
+    def structure_defined?
+      @schema && @structure_defined || false
     end
 
     # Same as defining a structure block, but with no attributes besides

@@ -29,7 +29,7 @@ module Migrant
       # Rails 3.2+ caches table (non) existence so this needs to be cleared before we start
       ActiveRecord::Base.connection.schema_cache.clear! if ActiveRecord::Base.connection.respond_to?(:schema_cache)
 
-      ActiveRecord::Base.descendants.select { |model| model.schema && model.schema.requires_migration? }.each do |model|
+      ActiveRecord::Base.descendants.select { |model| model.structure_defined? && model.schema.requires_migration? }.each do |model|
         model.reset_column_information # db:migrate doesn't do this
         @table_name = model.table_name
         @columns = Hash[[:changed, :added, :deleted, :renamed, :transferred].collect { |a| [a,[]] }]  
