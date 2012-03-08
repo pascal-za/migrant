@@ -1,3 +1,10 @@
+### 1.3.2 / 2012-03-08
+
+[full changelog](http://github.com/pascalh1011/migrant/compare/v1.3.1...v1.3.2)
+
+* Bug fixes
+  * [CRITICAL] Specifying a belongs_to association in a model no longer automatically assumes a schema creation
+
 ### 1.3.1 / 2012-02-12
 
 [full changelog](http://github.com/pascalh1011/migrant/compare/v1.3.0...v1.3.1)
