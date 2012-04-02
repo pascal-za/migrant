@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Migrant by pascalh1011</title>
+    
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="javascripts/scale.fix.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Migrant</h1>
+        <p>Easier schema management for Rails that complements your domain model.</p>
+        <p class="view"><a href="https://github.com/pascalh1011/migrant">View the Project on GitHub <small>pascalh1011/migrant</small></a></p>
+        <ul>
+          <li><a href="https://github.com/pascalh1011/migrant/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/pascalh1011/migrant/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/pascalh1011/migrant">Fork On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h3>Summary</h3>
+
+<p><a href="http://travis-ci.org/pascalh1011/migrant"><img src="https://secure.travis-ci.org/pascalh1011/migrant.png" alt="Build Status"></a></p>
+
+<p>Migrant gives you a clean DSL to describe your model schema (somewhat similar to DataMapper). It generates your migrations for you so you can spend more time describing your domain model cleanly and less time managing your database layer.</p>
+
+<p>You’ll also get a handy .mock method to instantiate a filled-in model for testing or debugging.</p>
+
+<h3>Getting started</h3>
+
+<p>In your Gemfile:</p>
+
+<div class="highlight">
+<pre><span class="n">gem</span> <span class="s2">"migrant"</span>
+</pre>
+</div>
+
+
+<h3>Describing your schema</h3>
+
+<p>Start by creating some models with the structure you need:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">Business</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">belongs_to</span> <span class="ss">:user</span>
+
+  <span class="c1"># Here's where you describe the columns in your model</span>
+  <span class="n">structure</span> <span class="k">do</span>
+    <span class="nb">name</span>             <span class="s2">"The kernel's favourite fried chickens"</span>
+    <span class="n">website</span>          <span class="s2">"<a href="http://www.google.co.za/">http://www.google.co.za/</a>"</span>
+    <span class="n">address</span>          <span class="ss">:text</span>
+    <span class="n">date_established</span> <span class="no">Time</span><span class="o">.</span><span class="n">now</span> <span class="o">-</span> <span class="mi">300</span><span class="o">.</span><span class="n">years</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>Simply specify an example of the type of data you’ll be storing, and Migrant will work out the correct database schema for you. Note that you don’t need to specify foreign keys in the structure, they are automatically inferred from your relations. Here is a further example:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">User</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="c1"># Define your associations BEFORE your structure block!</span>
+  <span class="n">has_many</span> <span class="ss">:businesses</span>
+
+  <span class="n">structure</span> <span class="k">do</span>
+    <span class="nb">name</span>                                          <span class="c1"># Don't specify any structure to get good 'ol varchar(255)</span>
+    <span class="n">surname</span>     <span class="s2">"Smith"</span><span class="p">,</span> <span class="ss">:validates</span> <span class="o">=&gt;</span> <span class="ss">:presence</span>  <span class="c1"># You can add your validations in here too to keep DRY</span>
+    <span class="n">description</span> <span class="ss">:string</span>                           <span class="c1"># Passing a symbol works like it does in add_column</span>
+    <span class="n">timestamps</span>                                    <span class="c1"># Gets you a created_at, and updated_at</span>
+
+    <span class="c1"># Use an array to specifiy multiple validations</span>
+    <span class="n">secret_code</span> <span class="mi">5521</span><span class="p">,</span>    <span class="ss">:validates</span> <span class="o">=&gt;</span> <span class="o">[</span><span class="ss">:uniqueness</span><span class="p">,</span> <span class="ss">:numericality</span><span class="o">]</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>Now, to get your database up to date simply run:</p>
+
+<pre><code>&gt; rake db:upgrade
+
+Wrote db/migrate/20101028192913_create_businesses.rb...
+Wrote db/migrate/20101028192916_create_users.rb...
+</code></pre>
+
+<p>OR, if you’d prefer to look over the migrations yourself first, run:</p>
+
+<pre><code>&gt; rails generate migrations
+</code></pre>
+
+<p>Result:</p>
+
+<pre><code>irb(main):001:0&gt; Business
+=&gt; Business(id: integer, user_id: integer, name: string, website: string, address: text, date_established: datetime)
+
+irb(main):002:0&gt; Awesome!!!!
+NoMethodError: undefined method `Awesome!!!!' for main:Object
+</code></pre>
+
+<p>By default, your database structure will be cloned to your test environment. If you don’t want this to happen automatically, simply specify an environment variable directly:</p>
+
+<pre><code>&gt; rake db:upgrade RAILS_ENV=development
+</code></pre>
+
+<h3>Serialization</h3>
+
+<p>Keeping track of your serialized attributes can be done in the Migrant DSL (v1.3+), here’s some examples:</p>
+
+<div class="highlight">
+<pre><span class="k">class</span> <span class="nc">Business</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">structure</span> <span class="k">do</span>
+    <span class="c1"># Specify serialization automatically (e.g. using Hash, Array, OpenStruct)</span>
+    <span class="n">awards</span>     <span class="o">[</span><span class="s2">"Best Chicken 2007"</span><span class="p">,</span> <span class="s2">"Business of the year 2008"</span><span class="o">]</span>
+
+    <span class="c1"># Serialization by example types</span>
+    <span class="c1"># This would load/store an OpenStruct but store as text in your database</span>
+    <span class="n">staff</span>      <span class="ss">:serialized</span><span class="p">,</span> <span class="ss">:example</span> <span class="o">=&gt;</span> <span class="no">OpenStruct</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s2">"Manager"</span> <span class="o">=&gt;</span> <span class="s2">"Joe"</span><span class="p">)</span>
+
+    <span class="c1"># Default serialization storage (hash)</span>
+    <span class="n">locations</span>  <span class="ss">:serialized</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>These will call ActiveRecord::Base.serialize for you so don’t do it again yourself! The mock generated would appear as:</p>
+
+<pre><code>irb(main):002:0&gt; my_business = Business.mock
+=&gt; #&lt;Business id: nil, awards: ["Best Chicken 2007", "Business of the year 2008"], staff: #&lt;OpenStruct manager="Joe"&gt;, 
+     locations: {}&gt;
+</code></pre>
+
+<h3>Want more examples?</h3>
+
+<p>Check out the test models in test/rails_app/app/models/*</p>
+
+<h3>Model Generator</h3>
+
+<pre><code>&gt; rails generate migrant:model business name:string website:text
+</code></pre>
+
+<p>The model generator works as per the default ActiveRecord one, i.e. you can specify fields to be included in the model. However, a migration is not generated immediately, but the structure block in the model is automatically filled out for you.</p>
+
+<p>Simply run rake db:upgrade or rails generate migrations to get the required migrations when you’re ready.</p>
+
+<h3>Default Behaviour</h3>
+
+<ul>
+<li>Creating tables or adding columns (as appropriate)</li>
+<li>Adding indexes (happens on foreign keys automatically)</li>
+<li>Validations (ActiveRecord 3)</li>
+<li>Changing column types</li>
+<li>Rollbacks for all the above</li>
+</ul><h3>Testing</h3>
+
+<p>If you'd like to use the example data you provided in the structure block, a mock() method is available on your model:</p>
+
+<pre><code>&gt; rails console
+
+irb(main):002:0&gt; my_business = Business.mock
+=&gt; #&lt;Business id: nil, name: "The Kernel's favourite fried chickens", website: "<a href="http://www.google.co.za/">http://www.google.co.za/</a>",
+     address: "11 Test Drive\nGardens\nCape Town\nSouth Africa", date_established: "1710-10-28 21:03:31"&gt;
+
+irb(main):003:0&gt; my_business.user
+=&gt; #&lt;User id: nil, name: "John", surname: "Smith", description: "Some string"&gt;
+</code></pre>
+
+<h4>Pickle/Cucumber Integration</h4>
+
+<p>Add the following to support/env/pickle.rb:</p>
+
+<div class="highlight">
+<pre><span class="nb">require</span> <span class="s1">'pickle/migrant'</span>
+<span class="no">Pickle</span><span class="o">.</span><span class="n">configure</span> <span class="k">do</span> <span class="o">|</span><span class="n">config</span><span class="o">|</span>
+ <span class="n">config</span><span class="o">.</span><span class="n">adapters</span> <span class="o">=</span> <span class="o">[</span><span class="no">Pickle</span><span class="o">::</span><span class="no">Migrant</span><span class="o">]</span>
+<span class="k">end</span>
+</pre>
+</div>
+
+
+<p>All pickle steps will then return a mocked model by default, overriden with any values you provide.</p>
+
+<h3>Help</h3>
+
+<p>Be sure to check out the Github Wiki, or give me a shout on Twitter: <a href="/101pascal" class="user-mention">@101pascal</a></p>
+
+<h3>Concerns over integration</h3>
+
+<ul>
+<li>You don’t have to define a structure on every model, Migrant ignores models with no definitions</li>
+<li>You can remove the structure definitions later and nothing bad will happen (besides losing automigration for those fields)</li>
+<li>If you have a model with relations but no columns, you can still generate foreign keys d by adding “no_structure” or defining a blank structure block.</li>
+<li>It’s probably a good idea to review the generated migrations before committing to SCM</li>
+</ul><h3>Roadmap / Planned features</h3>
+
+<ul>
+<li>Rake task to consolidate a given set of migrations (a lot of people like to do this once in a while to keep migration levels sane)</li>
+<li>Fabricator/Factory integration/seperation - Need to assess how useful this is, then optimize or kill.</li>
+</ul>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/pascalh1011">pascalh1011</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+  </body>
+</html>
