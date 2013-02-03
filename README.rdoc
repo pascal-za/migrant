@@ -17,7 +17,7 @@ In your Gemfile:
   
 * Rails: 3.0+ (Sorry folks, no plans for Rails 2 support)
 * Ruby: Tested with 1.8.7 MRI, 1.9.2 MRI, and Rubinius 1.2.1 
-* Adapters: Tested with SQLite3, MySQL, MySQL2, Pg. Should work with any AR adapter in theory.
+* Adapters: Tested with SQLite3, MySQL2, Pg. Should work with any AR adapter in theory.
 
 == Jumping right in
 
@@ -42,7 +42,6 @@ correct database schema for you. Note that you don't need to specify foreign key
 they are automatically inferred from your relations. Here is a further example:
 
   class User < ActiveRecord::Base
-    # Define your associations BEFORE your structure block!
     has_many :businesses
 
     structure do
