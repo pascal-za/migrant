@@ -4,6 +4,6 @@ class ChangedBusinessesModifiedLandline < ActiveRecord::Migration
   end
   
   def self.down
-    change_column :businesses, :landline, :string, :limit=>255
+    change_column :businesses, :landline, :string, :limit=>255, :default=>nil
   end
 end

@@ -1,3 +1,15 @@
+### 1.4.0 / 2013-02-03
+
+[full changelog](http://github.com/pascalh1011/migrant/compare/v1.3.2...v1.4.0)
+
+* Features
+  * Changes to the column default are now detected
+  * Change migrations filenames are named using new default values (to avoid conflicts)
+
+* Bug fixes
+  * Fixed associations failing to be added to the base model when using STI
+  * Fix possible issue with PostgreSQL regenerating migrations if the range primitive is used
+
 ### 1.3.2 / 2012-03-08
 
 [full changelog](http://github.com/pascalh1011/migrant/compare/v1.3.1...v1.3.2)
