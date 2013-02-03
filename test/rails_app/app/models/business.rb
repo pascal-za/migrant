@@ -16,7 +16,7 @@ class Business < ActiveRecord::Base
     operating_days   0..6
     date_established :datetime
     next_sale        (Time.now + 10.days)
-    verified         false, default: false
+    verified         false, :default => false
     location         :type => :string, :limit => 127
     awards           ["Best business 2007", "Tastiest Chicken 2008"]
     managers         :serialized
