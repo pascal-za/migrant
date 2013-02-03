@@ -11,7 +11,7 @@ class CreateBusinesses < ActiveRecord::Migration
       t.text :description 
       t.string :landline 
       t.string :mobile 
-      t.integer :operating_days, :limit=>1 
+      t.integer :operating_days
       t.datetime :date_established 
       t.datetime :next_sale 
       t.boolean :verified

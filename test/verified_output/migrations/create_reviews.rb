@@ -4,7 +4,7 @@ class CreateReviews < ActiveRecord::Migration
       t.integer :business_id
       t.integer :user_id
       t.string :name
-      t.integer :rating, :limit=>1
+      t.integer :rating
       t.text :body
       t.integer :views
     end

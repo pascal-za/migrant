@@ -1,13 +1,7 @@
 # SQLite version 3.x
 #   gem install sqlite3-ruby (not necessary on OS X Leopard)
-testy:
+test:
   adapter: sqlite3
   database: db/test.sqlite3
   pool: 5
   timeout: 5000
-
-test:
-  adapter: mysql2
-  database: migrant
-  pool: 5
-  username: root

@@ -31,7 +31,7 @@ class TestDataSchema < Test::Unit::TestCase
     end
 
     should "generate a smallint column when given a small range" do
-      assert_schema(Business, :operating_days, :limit => 1, :type => :integer)
+      assert_schema(Business, :operating_days, :type => :integer)
     end
     
     should "generate a large integer (size 8) for any bignum types" do
