@@ -90,7 +90,7 @@ module Migrant
 
           # Example: changed_table_added_something_and_modified_something
           @activity = 'changed_'+model.table_name+[['added', @columns[:added]], ['modified', @columns[:changed]], ['deleted', destroyed_columns], 
-          ['moved', @columns[:transferred]], ['renamed', @columns[:renamed]], ['indexed', @new_indexes]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:first).join('_') }.join('_and')
+          ['moved', @columns[:transferred]], ['renamed', @columns[:renamed]], ['indexed', @new_indexes]].reject { |v| v[1].empty? }.collect { |v| "_#{v[0]}_"+v[1].collect(&:last).join('_') }.join('_and')
           @activity = @activity.split('_')[0..2].join('_')+'_with_multiple_changes' if @activity.length >= 240 # Most filesystems will raise Errno::ENAMETOOLONG otherwise
           
           render('change_migration')
@@ -116,24 +116,30 @@ module Migrant
 
     private
     def add_column(name, options)
-      @columns[:added] << [name, options]
+      @columns[:added] << [name, options, name]
     end
     
     def change_column(name, new_schema, old_schema)
-      @columns[:changed] << [name, new_schema, old_schema]
+      if new_schema[:default] && new_schema[:default].respond_to?(:to_s) && new_schema[:default].to_s.length < 31
+        change_description = "#{name}_defaulted_to_#{new_schema[:default].to_s.underscore}"
+      else
+        change_description = name
+      end
+
+      @columns[:changed] << [name, new_schema, old_schema, change_description]
     end
     
     def delete_column(name, current_structure)
-      @columns[:deleted] << [name, current_structure]
+      @columns[:deleted] << [name, current_structure, name]
     end
     
     def move_column(old_name, new_name, old_schema, new_schema)
       if new_schema == old_schema
-        @columns[:renamed] << [old_name, new_name]
+        @columns[:renamed] << [old_name, new_name, old_name]
         @columns[:added].reject! { |a| a.first == new_name } # Don't add the column too
       else
         @possible_irreversible_migrations = true
-        @columns[:transferred] << [old_name, new_name] # Still need to add the column, just transfer the data afterwards
+        @columns[:transferred] << [old_name, new_name, old_name] # Still need to add the column, just transfer the data afterwards
         delete_column(old_name, old_schema)
       end
     end
