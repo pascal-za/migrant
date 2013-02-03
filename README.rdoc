@@ -1,5 +1,5 @@
 = Migrant
-{<img src="https://secure.travis-ci.org/pascalh1011/migrant.png" />}[http://travis-ci.org/pascalh1011/migrant]
+{<img src="https://secure.travis-ci.org/pascalh1011/migrant.png?branch=master" />}[http://travis-ci.org/pascalh1011/migrant]
 
 == Summary
 
