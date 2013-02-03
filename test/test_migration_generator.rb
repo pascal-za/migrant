@@ -233,7 +233,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
 
     should "update a column to include a new default" do
       Business.structure do
-        verified true, default: true
+        verified true, :default => true
       end
 
       run_against_template('modified_verified')
