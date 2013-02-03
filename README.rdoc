@@ -16,8 +16,8 @@ In your Gemfile:
   gem "migrant"
   
 * Rails: 3.0+ (Sorry folks, no plans for Rails 2 support)
-* Ruby: Tested with 1.8.7 MRI, 1.9.2 MRI, and Rubinius 1.2.1 
-* Adapters: Tested with SQLite3, MySQL2, Pg. Should work with any AR adapter in theory.
+* Ruby: Tested with recent 1.8, 1.9, Rubinius and JRuby version (See Travis CI)
+* Adapters: Tested with SQLite3, MySQL2, Pg. May work with other ActiveRecord adapters
 
 == Jumping right in
 
