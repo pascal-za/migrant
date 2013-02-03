@@ -13,7 +13,8 @@ class TestDataSchema < Test::Unit::TestCase
     should "generate a foreign key field for a belongs_to association" do
       assert_schema(Business, :user_id, :type => :integer)
       assert_schema(BusinessCategory, :business_id, :type => :integer)      
-      assert_schema(BusinessCategory, :category_id, :type => :integer)      
+      assert_schema(BusinessCategory, :category_id, :type => :integer)  
+      assert_schema(User, :category_id, :type => :integer) 
     end  
     
     should "generate foreign key fields for a *polymorphic* belongs_to association" do

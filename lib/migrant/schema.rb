@@ -106,6 +106,10 @@ module Migrant
     def requires_migration?
       false # All added to base table
     end
+
+    def add_association(association)
+      parent_schema.add_association(association)
+    end
   end
 
   # Why does this class exist? Excellent question.

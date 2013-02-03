@@ -236,8 +236,6 @@ class TestMigrationGenerator < Test::Unit::TestCase
         verified true, default: true
       end
 
-      #rake_migrate
-      #generate_migrations
       run_against_template('modified_verified')
     end
   end

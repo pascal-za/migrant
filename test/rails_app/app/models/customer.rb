@@ -1,4 +1,6 @@
 class Customer < User
+  belongs_to :category
+
   structure do
     money_spent   "$5.00"
     money_gifted  "NOK 550.00" 
