@@ -5,6 +5,7 @@
 * Features
   * Changes to the column default are now detected
   * Change migrations filenames are named using new default values (to avoid conflicts)
+  * Remove official 1.8 support (still works but too much testing overhead for now)
 
 * Bug fixes
   * Fixed associations failing to be added to the base model when using STI
