@@ -6,7 +6,7 @@ class CreateBusinesses < ActiveRecord::Migration
       t.integer :owner_id 
       t.string :name 
       t.string :website 
-      t.text :address 
+      t.text :address
       t.string :summary 
       t.text :description 
       t.string :landline 
@@ -14,7 +14,7 @@ class CreateBusinesses < ActiveRecord::Migration
       t.integer :operating_days, :limit=>1 
       t.datetime :date_established 
       t.datetime :next_sale 
-      t.boolean :verified 
+      t.boolean :verified
       t.string :location, :limit=>127 
       t.text :awards 
       t.text :managers 

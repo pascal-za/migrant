@@ -58,7 +58,9 @@ module DataType
       if current_structure
         # General RDBMS data loss scenarios
         if new_structure[:limit] && current_structure[:limit].to_i != new_structure[:limit].to_i ||
-           new_structure[:type] != current_structure[:type]
+           new_structure[:type] != current_structure[:type] ||
+           new_structure[:default] && new_structure[:default] != current_structure[:default]
+
            column
         else
           nil # No changes

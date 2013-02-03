@@ -36,7 +36,7 @@ module Migrant
 
         if model.table_exists?
           # Structure ActiveRecord::Base's column information so we can compare it directly to the schema
-          db_schema = Hash[*model.columns.collect {|c| [c.name.to_sym, Hash[*[:type, :limit].map { |type| [type, c.send(type)] }.flatten]  ] }.flatten]
+          db_schema = Hash[*model.columns.collect {|c| [c.name.to_sym, Hash[*[:type, :limit, :default].map { |type| [type, c.send(type)] }.flatten]  ] }.flatten]
           model.schema.columns.to_a.sort { |a,b| a.to_s <=> b.to_s }.each do |field_name, data_type|
             if data_type.dangerous_migration_from?(db_schema[field_name]) && 
                ask_user("#{model}: '#{field_name}': Converting from ActiveRecord type #{db_schema[field_name][:type]} to #{data_type.column[:type]} could cause data loss. Continue?", %W{Yes No}, true) == "No"

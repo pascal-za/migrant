@@ -230,6 +230,16 @@ class TestMigrationGenerator < Test::Unit::TestCase
       STDIN._mock_responses('M', 'incompatible_spot', 'N', 'Y')
       run_against_template('added_incompatible_spot_and_deleted_spots')
     end
+
+    should "update a column to include a new default" do
+      Business.structure do
+        verified true, default: true
+      end
+
+      #rake_migrate
+      #generate_migrations
+      run_against_template('modified_verified')
+    end
   end
 end
 
