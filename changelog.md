@@ -1,3 +1,11 @@
+### 1.4.1 / 2013-03-16
+
+[full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.0...v1.4.1)
+
+* Bug Fixes
+  * Fix term-ansicolor not being detected as a dependency in some bundler versions
+  * Signed with RubyGems OpenPGP (experimental)
+
 ### 1.4.0 / 2013-02-03
 
 [full changelog](http://github.com/pascalh1011/migrant/compare/v1.3.2...v1.4.0)
