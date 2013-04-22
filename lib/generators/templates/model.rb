@@ -10,7 +10,7 @@ class <%= class_name %> < <%= parent_class_name.classify %>
 <%  end
    end -%>
 
-   timestamps
+    timestamps
   end
 end
 

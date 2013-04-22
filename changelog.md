@@ -1,3 +1,8 @@
+### master
+
+* Misc
+  * Added timestamps to migrant:model generator by default
+
 ### 1.4.1 / 2013-03-16
 
 [full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.0...v1.4.1)
