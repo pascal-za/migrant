@@ -9,6 +9,8 @@ class <%= class_name %> < <%= parent_class_name.classify %>
     <%= attribute.name.to_s.ljust(max_field_length) %> :<%= attribute.type %>
 <%  end
    end -%>
+
+   timestamps
   end
 end
 
