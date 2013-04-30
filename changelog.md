@@ -1,4 +1,9 @@
-### master
+### 1.4.2
+
+[full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.0...v1.4.1)
+
+* Bug Fixes
+  * Generate date fields by default when Date class is given to structure block
 
 * Misc
   * Added timestamps to migrant:model generator by default
