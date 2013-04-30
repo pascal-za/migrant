@@ -15,6 +15,7 @@ class Business < ActiveRecord::Base
     mobile           :string
     operating_days   0..6
     date_established :datetime
+    date_registered  Date.today - 10.years
     next_sale        (Time.now + 10.days)
     verified         false, :default => false
     location         :type => :string, :limit => 127

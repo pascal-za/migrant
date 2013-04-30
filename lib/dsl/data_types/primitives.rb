@@ -23,6 +23,16 @@ module DataType
   # Datetime
   class Date < Base
     def column_defaults
+      {:type => :date}
+    end
+    
+    def self.default_mock
+      ::Date.today
+    end
+  end
+  
+  class Time < Date 
+    def column_defaults
       {:type => :datetime}
     end
     
@@ -30,8 +40,6 @@ module DataType
       ::Time.now
     end
   end
-  
-  class Time < Date; end;  # No different to date type
 
   # Integers
   class Fixnum < Base

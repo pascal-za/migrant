@@ -28,7 +28,8 @@ class TestDataSchema < Test::Unit::TestCase
 
     should "generate a datetime column when given a date or time example" do
       assert_schema(Business, :date_established, :type => :datetime)
-      assert_schema(Business, :next_sale, :type => :datetime)      
+      assert_schema(Business, :next_sale, :type => :datetime)
+      assert_schema(Business, :date_registered, :type => :date)
     end
 
     should "generate a smallint column when given a small range" do

@@ -14,6 +14,7 @@ class CreateBusinesses < ActiveRecord::Migration
       t.integer :operating_days
       t.datetime :date_established 
       t.datetime :next_sale 
+      t.date :date_registered
       t.boolean :verified
       t.string :location, :limit=>127 
       t.text :awards 
