@@ -241,7 +241,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
 
     should "update indexes on a model" do
       Business.structure do
-        name "The Kernel's favourite fried chickens.", index: true
+        name "The Kernel's favourite fried chickens.", :index => true
       end
 
       run_against_template('businesses_indexed_name')
