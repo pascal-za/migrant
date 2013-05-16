@@ -26,3 +26,4 @@ tmp/*
 test/rails_app/db/migrate/*
 test/rails_app/db/schema.rb
 Gemfile.lock
+.rbenv-version

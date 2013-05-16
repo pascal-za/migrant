@@ -11,7 +11,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
   def generate_migrations
     Profiler.run(:migration_generator) do
       assert_equal true, Migrant::MigrationGenerator.new.run, "Migration Generator reported an error"
-    end    
+    end
   end
 
   def run_against_template(template)
@@ -39,7 +39,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
     end
     false
   end
-  
+
   def delete_last_migration
     File.delete(Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).last)
   end
@@ -122,7 +122,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
       assert_equal(Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db' ,'migrate', '*.rb')).select { |migration_file| migration_file.include?('new_field_i_made_up') }.length,
                    1,
                    "Migration should have been generated (without a duplicate)")
-      rake_migrate                   
+      rake_migrate
     end
 
     should "recursively generate mocks for every model" do
@@ -137,7 +137,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
         test_mockup_hash OpenStruct.new({'a' => 'b'})
         test_mockup_serialized_example :serialized, :example => OpenStruct.new({'c' => 'd'})
       end
-      
+
 
       BusinessCategory.belongs_to(:notaclass, :polymorphic => true)
       generate_migrations
@@ -145,47 +145,47 @@ class TestMigrationGenerator < Test::Unit::TestCase
       BusinessCategory.reset_column_information
       m = BusinessCategory.mock!
       mock = BusinessCategory.last
-      
+
       assert_not_nil(mock)
       assert(mock.test_mockup_of_text.is_a?(String))
       assert(mock.test_mockup_of_string.is_a?(String))
       assert(mock.test_mockup_of_integer.is_a?(Fixnum))
       assert(mock.test_mockup_of_float.is_a?(Float))
-      assert(mock.test_mockup_of_currency.is_a?(BigDecimal))    
-      assert(mock.test_mockup_of_datetime.is_a?(Time))    
+      assert(mock.test_mockup_of_currency.is_a?(BigDecimal))
+      assert(mock.test_mockup_of_datetime.is_a?(Time))
       assert(DataType::Base.default_mock.is_a?(String))
       assert(mock.test_mockup_serialized.is_a?(Hash))
       assert(mock.test_mockup_hash.is_a?(OpenStruct))
       assert_equal(mock.test_mockup_hash.a, 'b')
-      assert(mock.test_mockup_serialized_example.is_a?(OpenStruct))  
+      assert(mock.test_mockup_serialized_example.is_a?(OpenStruct))
       assert_equal(mock.test_mockup_serialized_example.c, 'd')
     end
-    
+
     should "not rescursively generate mocks for an inherited model when prohibited by the user" do
       category_mock = BusinessCategory.mock!({}, false)
       assert_not_nil(category_mock)
     end
-        
+
     should "generate example mocks for an inherited model when STI is in effect" do
       assert_equal(5.00, Customer.mock.average_rating)
       assert_equal("somebody@somewhere.com", Customer.mock.email)
       assert(Customer.mock.is_a?(Customer))
     end
-    
-    
+
+
     should "remove columns when requested and confirmed by the user" do
-      Chameleon.structure 
+      Chameleon.structure
       Chameleon.reset_structure!
       Chameleon.no_structure
-      
+
       STDIN._mock_responses('D', 'y')
       run_against_template('deleted_incompatible_spot')
     end
-    
+
     should "not remove columns when the user does not confirm" do
       Chameleon.reset_structure!
       Chameleon.no_structure
-      
+
       STDIN._mock_responses('D', 'n')
       generate_migrations
       rake_migrate
@@ -193,7 +193,7 @@ class TestMigrationGenerator < Test::Unit::TestCase
         spots
       end
     end
-    
+
     should "successfully rename a column missing from the schema to a new column specified by the user" do
       Chameleon.structure do
         old_spots
@@ -207,11 +207,11 @@ class TestMigrationGenerator < Test::Unit::TestCase
       STDIN._mock_responses('M', 'new_spots')
       run_against_template('renamed_old_spots')
     end
-    
+
     should "transfer data to an new incompatible column if the operation is safe" do
       Chameleon.reset_column_information
       Chameleon.create!(:new_spots => "22")
-      Chameleon.reset_structure!      
+      Chameleon.reset_structure!
       Chameleon.structure do
         new_longer_spots "100", :as => :text
       end
@@ -220,13 +220,13 @@ class TestMigrationGenerator < Test::Unit::TestCase
       Chameleon.reset_column_information
       assert_equal(Chameleon.first.new_longer_spots, "22")
     end
-    
+
     should "remove any column if a user elects to when a column can't be moved due to incompatible types" do
-      Chameleon.reset_structure!  
+      Chameleon.reset_structure!
       Chameleon.structure do
         incompatible_spot 5
       end
-      
+
       STDIN._mock_responses('M', 'incompatible_spot', 'N', 'Y')
       run_against_template('added_incompatible_spot_and_deleted_spots')
     end
@@ -237,6 +237,14 @@ class TestMigrationGenerator < Test::Unit::TestCase
       end
 
       run_against_template('modified_verified')
+    end
+
+    should "update indexes on a model" do
+      Business.structure do
+        name "The Kernel's favourite fried chickens.", index: true
+      end
+
+      run_against_template('businesses_indexed_name')
     end
   end
 end

@@ -22,7 +22,7 @@ Gem::Specification.new do |s|
   s.summary = %q{All the fun of ActiveRecord without writing your migrations, and with a dash of mocking.}
 
   s.add_development_dependency(%q<thoughtbot-shoulda>, [">= 0"])
-  s.add_development_dependency(%q<minitest>, [">= 1.6.0"])
+  s.add_development_dependency(%q<minitest>, ["~> 4.0"])
   s.add_development_dependency(%q<ansi>, [">= 0"])
   s.add_development_dependency(%q<turn>, [">= 0"])
   s.add_development_dependency(%q<sqlite3>, [">= 0"])
