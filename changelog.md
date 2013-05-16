@@ -1,3 +1,8 @@
+### HEAD
+
+* Bug Fixes
+  * Name migrations correctly that only add one index
+
 ### 1.4.2
 
 [full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.0...v1.4.1)
