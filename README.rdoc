@@ -15,10 +15,6 @@ In your Gemfile:
 
   gem "migrant"
   
-* Rails: 3.0+ (Sorry folks, no plans for Rails 2 support)
-* Ruby: 1.9, Rbx, JRuby Supported, 1.8 works but unsupported (See Travis CI)
-* Adapters: Tested with SQLite3, MySQL2, Pg. May work with other ActiveRecord adapters
-
 == Jumping right in
 
 Start by creating some models with the structure you need:
@@ -124,6 +120,12 @@ Simply run rake db:upgrade or rails generate migrations to get the required migr
 * Validations (ActiveRecord 3)
 * Changing column types
 * Rollbacks for all the above
+
+== Compatibility
+
+* Ruby 1.8.7, 1.9.2, 1.9.3, rbx-head
+* Rails 3.0 (all versions)
+* Rails 4.0 (only from v1.4.3 onwards)
 
 == Getting a mock of your model
 

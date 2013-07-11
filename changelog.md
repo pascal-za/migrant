@@ -1,11 +1,14 @@
-### HEAD
+### 1.4.3
+
+[full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.2...v1.4.3)
 
 * Bug Fixes
   * Name migrations correctly that only add one index
+  * Now compatible with Rails 4.0
 
 ### 1.4.2
 
-[full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.0...v1.4.1)
+[full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.0...v1.4.2)
 
 * Bug Fixes
   * Generate date fields by default when Date class is given to structure block
