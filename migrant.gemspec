@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Pascal Houliston"]
-  s.date = %q{2011-05-23}
+  s.date = Date.today
   s.description = %q{Easier schema management for Rails that complements your domain model.}
   s.email = %q{101pascal@gmail.com}
   s.extra_rdoc_files = [
