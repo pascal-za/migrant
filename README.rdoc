@@ -123,7 +123,8 @@ Simply run rake db:upgrade or rails generate migrations to get the required migr
 
 == Compatibility
 
-* Ruby 1.8.7, 1.9.2, 1.9.3, rbx-head
+* Officially supported: Ruby 1.9.3, 2.0.0, rbx-head
+* Unofficially supported: Ruby 1.8.7, 1.9.2
 * Rails 3.0 (all versions)
 * Rails 4.0 (only from v1.4.3 onwards)
 
