@@ -3,3 +3,6 @@ rvm:
   - 2.0.0
   - 1.9.3
   - rbx-19mode
+env:
+  - "RAILS_VERSION=~> 3.2"
+  - "RAILS_VERSION=~> 4.0"

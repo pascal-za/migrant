@@ -8,7 +8,9 @@ module Migrant
       FileUtils.mkdir_p(Rails.root.join('db', 'migrate'))
       @possible_irreversible_migrations = false
 
-      migrator = ActiveRecord::Migrator.open(migrations_path)
+      migrator = (ActiveRecord::Migrator.public_methods.include?(:open))? 
+                  ActiveRecord::Migrator.open(migrations_path) : 
+                  ActiveRecord::Migrator.new(:up, migrations_path)
 
       unless migrator.pending_migrations.blank?
         log "You have some pending database migrations. You can either:\n1. Run them with rake db:migrate\n2. Delete them, in which case this task will probably recreate their actions (DON'T do this if they've been in SCM).", :error
