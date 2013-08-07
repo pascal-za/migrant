@@ -1,3 +1,10 @@
+### 1.5.0
+
+[full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.3...v1.5.0)
+
+* Autoswitch compatibility between Rails 3.2 and Rails 4
+* Add automated Travis testing for multiple Rails versions
+
 ### 1.4.3
 
 [full changelog](http://github.com/pascalh1011/migrant/compare/v1.4.0...v1.4.3)
