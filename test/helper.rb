@@ -52,10 +52,6 @@ class << STDIN
   end
 end
 
-# Reset database
-db_path = File.join(File.dirname(__FILE__), 'rails_app', 'db', 'test.sqlite3')
-File.delete(db_path) if File.exists?(db_path)
-
 # Remove migrations
 Dir.glob(File.join(File.dirname(__FILE__), 'rails_app', 'db', 'migrate', '*')).each do |file|
  File.delete(file)
