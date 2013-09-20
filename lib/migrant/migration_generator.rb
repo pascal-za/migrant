@@ -24,7 +24,7 @@ module Migrant
 
       Dir["#{model_root}**/*.rb"].each do |file|
         if (model_name = file.sub(model_root, '').match(/(.*)?\.rb$/))
-          model_name[1].camelize.constantize
+          model_name[1].camelize.safe_constantize
         end
       end
 
