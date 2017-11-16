@@ -1,4 +1,4 @@
-class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration
+class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration<%= @class_suffix %>
   def self.up
   <% @columns[:added].each do |field, options| %>
     add_column :<%= @table_name %>, :<%= field %>, :<%= options.delete(:type) %><%= (options.blank?)? '': ", "+options.inspect[1..-2] %>

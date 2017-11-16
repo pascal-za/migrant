@@ -12,11 +12,19 @@ module DataType
     def self.default_mock
       true
     end
+    
+    def column_default_changed?(old_default, new_default)
+      old_default.to_s[0] != new_default.to_s[0]
+    end
   end
   
   class FalseClass < TrueClass
     def self.default_mock
       false
+    end
+
+    def column_default_changed?(old_default, new_default)
+      old_default.to_s[0] != new_default.to_s[0]
     end
   end
   
@@ -58,6 +66,9 @@ module DataType
     def column_defaults
       {:type => :integer, :limit => ((@value.size > 8)? @value.size : 8) }
     end
+  end
+  
+  class Integer < Bignum
   end
   
   class Float < Base

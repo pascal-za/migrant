@@ -1,6 +1,6 @@
 # lib/my_gem/railtie.rb
-require 'migrant'
-require 'rails'
+#require 'migrant'
+#require 'rails'
 
 module Migrant
   class Railtie < Rails::Railtie

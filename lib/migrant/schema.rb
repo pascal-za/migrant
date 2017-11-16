@@ -1,5 +1,3 @@
-require 'simple_object'
-
 module Migrant
   # Converts the following DSL:
   #
