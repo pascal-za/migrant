@@ -1,5 +1,6 @@
 # Migrant
 [![Build Status](https://api.travis-ci.org/pascalh1011/migrant.png)](https://travis-ci.org/pascalh1011/migrant)
+[![Coverage Status](https://coveralls.io/repos/github/pascalh1011/migrant/badge.svg?branch=master)](https://coveralls.io/github/pascalh1011/migrant?branch=master)
 
 ## Summary
 
