@@ -38,12 +38,11 @@ Start by creating some models with the structure you need:
     end
   end
 ```
-
-```ruby
 Simply specify an example of the type of data you'll be storing, and Migrant will work out the 
 correct database schema for you. Note that you don't need to specify foreign keys in the structure, 
 they are automatically inferred from your relations. Here is a further example:
 
+```ruby
   class User < ActiveRecord::Base
     has_many :businesses
 
