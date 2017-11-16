@@ -1,29 +1,15 @@
-## MAC OS
-.DS_Store
+/.bundle/
+/.yardoc
+/Gemfile.lock
+/_yardoc/
+/coverage/
+/doc/
+/pkg/
+/spec/reports/
+/tmp/
 
-## TEXTMATE
-*.tmproj
-tmtags
+/log/*
 
-## EMACS
-*~
-\#*
-.\#*
-
-## VIM
-*.swp
-
-# Rubinius
-*.rbc
-
-## PROJECT::GENERAL
-coverage
-rdoc
-pkg
-
-## PROJECT::SPECIFIC
-tmp/*
-test/rails_app/db/migrate/*
-test/rails_app/db/schema.rb
-Gemfile.lock
-.rbenv-version
+# rspec failure tracking
+.rspec_status
+.ruby-version

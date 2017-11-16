@@ -1,4 +1,4 @@
-require 'erubis'
+require 'erubi'
 require 'term/ansicolor'
 
 module Migrant
@@ -11,9 +11,11 @@ module Migrant
       migrator = (ActiveRecord::Migrator.public_methods.include?(:open))? 
                   ActiveRecord::Migrator.open(migrations_path) : 
                   ActiveRecord::Migrator.new(:up, migrations_path)
+                  
+      @class_suffix = defined?(ActiveRecord::Migration::Compatibility)? "[#{Rails.version[/^\d+\.\d+/]}]" : ''
 
       unless migrator.pending_migrations.blank?
-        log "You have some pending database migrations. You can either:\n1. Run them with rake db:migrate\n2. Delete them, in which case this task will probably recreate their actions (DON'T do this if they've been in SCM).", :error
+        log "Aborting as this database has not yet run all the existing migrations.\n\nMost likely you just need to run rake db:migrate instead of rake db:upgrade in this environment.", :error
         return false
       end
 
@@ -128,7 +130,7 @@ module Migrant
 
     def change_column(name, new_schema, old_schema)
       if new_schema[:default] && new_schema[:default].respond_to?(:to_s) && new_schema[:default].to_s.length < 31
-        change_description = "#{name}_defaulted_to_#{new_schema[:default].to_s.underscore}"
+        change_description = "#{name}_defaulted_to_#{new_schema[:default].to_s.underscore.gsub(/\./, '')}"
       else
         change_description = name
       end
@@ -152,7 +154,7 @@ module Migrant
     end
 
     def migrations_path
-      Rails.root.join(ActiveRecord::Migrator.migrations_path)
+      Rails.root.join(ActiveRecord::Migrator.migrations_paths.first)
     end
 
     include Term::ANSIColor
@@ -209,7 +211,9 @@ module Migrant
     end
 
     def render(template_name)
-      @output = Erubis::Eruby.new(File.read(File.join(File.dirname(__FILE__), "../generators/templates/#{template_name}.erb"))).result(binding)
+      template = File.read(File.join(File.dirname(__FILE__), "../generators/templates/#{template_name}.erb"))
+      erubi = Erubi::Engine.new(template, :trim => true)
+      @output = eval(erubi.src, binding)
     end
   end
 end

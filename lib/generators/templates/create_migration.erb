@@ -1,4 +1,4 @@
-class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration
+class <%= @activity.camelize.gsub(/\s/, '') %> < ActiveRecord::Migration<%= @class_suffix %>
   def self.up
     create_table :<%= @table_name %> do |t|
       <% @columns.each do |field, options| %>

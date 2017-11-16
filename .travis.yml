@@ -1,8 +1,11 @@
+sudo: false
 language: ruby
 rvm:
-  - 2.0.0
-  - 1.9.3
-  - rbx-19mode
+  - 2.4.2
+  - 2.3.5
+  - 2.2.8
+before_install: gem install bundler -v 1.16 --no-rdoc --no-ri
 env:
-  - "RAILS_VERSION='~> 3.2'"
-  - "RAILS_VERSION='~> 4.0'"
+  - "RAILS_VERSION=4.2.0"
+  - "RAILS_VERSION=5.0.0"
+  - "RAILS_VERSION=5.1.0"

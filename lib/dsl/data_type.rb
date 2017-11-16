@@ -59,7 +59,7 @@ module DataType
         # General RDBMS data loss scenarios
         if new_structure[:limit] && current_structure[:limit].to_i != new_structure[:limit].to_i ||
            new_structure[:type] != current_structure[:type] ||
-           new_structure[:default] && new_structure[:default] != current_structure[:default]
+           !new_structure[:default].nil? && column_default_changed?(current_structure[:default], new_structure[:default])
 
            column
         else
@@ -72,6 +72,10 @@ module DataType
 
     def dangerous_migration_from?(current_structure = nil)
       current_structure && (column[:type] != :text && [:string, :text].include?(current_structure[:type]) && column[:type] != current_structure[:type])
+    end
+    
+    def column_default_changed?(old_default, new_default)
+      new_default.to_s != old_default.to_s
     end
 
     def self.migrant_data_type?; true; end

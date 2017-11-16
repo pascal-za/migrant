@@ -35,14 +35,7 @@ module Migrant
         # Set up serialized columns as required
         @schema.columns.select do |name, column|
           if column.serialized?
-            serialized = if defined?(::ActiveRecord::Type::Serialized)
-                           recognized_column = columns_hash[name.to_s]
-                           recognized_column && recognized_column.cast_type.is_a?(::ActiveRecord::Type::Serialized)
-                         else
-                           # Rails < 4.2
-                           serialized_attributes.keys.include?(name.to_s)
-                         end
-            serialize(name, column.serialized_class_name) unless serialized
+            serialize(name, column.serialized_class_name)
           end
         end
       else
