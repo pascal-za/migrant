@@ -67,10 +67,13 @@ module DataType
       {:type => :integer, :limit => ((@value.size > 8)? @value.size : 8) }
     end
   end
-  
-  class Integer < Bignum
+
+  if 1.class.name == 'Integer' # since ruby 2.4 Integer is the general int type, so inherit our assumed general type (Fixnum)
+    class Integer < Fixnum; end
+  else
+    class Integer < Bignum; end
   end
-  
+
   class Float < Base
     def column_defaults
       {:type => :float}
